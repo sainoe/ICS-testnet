@@ -1,2 +1,2 @@
 # IS-testnet
-Resources to setup Interchain-Security 
+Documentation to setup a Interchain-Security Testnet.
