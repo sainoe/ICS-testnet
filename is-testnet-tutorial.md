@@ -1,6 +1,6 @@
 ## Interchain-Security Testnet
 
-This guide contains the instructions to setup a Interchain-Security Testnet. For the sake of simplicity, both provider and consumer chains run a single node chorum. Yet, after the completition of this tutorial you have the possibility to add other nodes to the networks by following these complementary intructions [guide]().
+This guide contains the instructions to setup a Interchain-Security Testnet. For the sake of simplicity, both provider and consumer chains run a single node chorum. Yet, after the completition of this tutorial you have the possibility to add other nodes to the networks by following these complementary intructions [guide](https://github.com/sainoe/IS-testnet/blob/main/join-is-tesnet.md).
 
 ---
 
