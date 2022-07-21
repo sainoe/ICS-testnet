@@ -37,7 +37,7 @@ __0. Remove any existing node directory__
 __1. Create an initial genesis__  
 Create the initial genesis file (`/<prov-node-dir>/config/genesis.json`) with the following command:  
 
-`interchain-security-pd init --chain-id provider <provider-node-moniker> --home /<prov-node-dir>`  
+`interchain-security-pd init <provider-node-moniker> --chain-id provider --home /<prov-node-dir>`  
 
 *If you want to make any updates to the genesis, it is a good opportunity to make these updates now.*<br/><br/>
 
@@ -47,7 +47,7 @@ This command will shorten the voting period to 3 minutes in order to make pass a
 ```
 jq ".app_state.gov.voting_params.voting_period = \"180s\"" \
     /<prov-node-dir>/config/genesis.json > /<prov-node-dir>/edited_genesis.json && \
-    mv /<prov-node-dir>/edited_genesis.json <prov-node-dir>/config/genesis.json
+    mv /<prov-node-dir>/edited_genesis.json /<prov-node-dir>/config/genesis.json
 ```  
 <br/><br/>
 
@@ -55,7 +55,7 @@ __3. Create an account keypair__
 This following step creates a public/private keypair and stores it under the given keyname. The output is also exported into a json file for later use.  
 ```
 interchain-security-pd keys add <provider-keyname> --home /<prov-node-dir> \
-    --output json > /<prov-node-dir>/<provider_keyname_keypair.json> 2>&1
+    --keyring-backend test --output json > /<prov-node-dir>/<provider_keyname_keypair.json> 2>&1
 ```
 <br/><br/>
 
@@ -64,7 +64,7 @@ To set an initial account into the genesis states use the command bellow. It wil
 ```
 # Get local account address
 PROV_ACCOUNT_ADDR=$(interchain-security-pd keys show <provider-keyname> \
-       --keyring-backend test --home ./provider --output json | jq '.address')
+       --home /<prov-node-dir> --output json | jq '.address')
 
 $ Add tokens
 interchain-security-pd add-genesis-account $PROV_ACCOUNT_ADDR 1000000000stake --home /<prov-node-dir>
@@ -142,11 +142,12 @@ This command below will create a governance proposal and allow us to vote for it
 #create proposal
 interchain-security-pd tx gov submit-proposal \
        create-consumer-chain consumer-proposal.json \
+       --keyring-backend test \
        --chain-id provider --from <provider-keyname> --home /<prov-node-dir> -b block
 
 #vote yes
 interchain-security-pd tx gov vote 1 yes --from <provider-keyname> \
-       --chain-id provider --home /<prov-node-dir> -b block
+       --keyring-backend test --chain-id provider --home /<prov-node-dir> -b block
 
 #check that the proposal status is now `PROPOSAL_STATUS_PASSED`
 interchain-security-pd q gov proposal 1 --home /<prov-node-dir>
