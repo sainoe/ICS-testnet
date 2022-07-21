@@ -62,7 +62,7 @@ interchain-security-pd keys add <provider-keyname> --home /<prov-node-dir> \
 __4. Add funds to account__  
 To set an initial account into the genesis states use the command bellow. It will allocates `1000000000` "stake" tokens to our local account.
 ```
-# Get validator consensus address
+# Get local account address
 PROV_ACCOUNT_ADDR=$(interchain-security-pd keys show <provider-keyname> \
        --keyring-backend test --home ./provider --output json | jq '.address')
 
@@ -182,7 +182,7 @@ __3. Add account to genesis states__
 To set an initial account into the chain genesis states using the following command. It will allocates `1000000000` "stake" tokens to our local account.
 
 ```
-#Get consumer chain account address
+#Get local account address
 CONS_ACCOUNT_ADDR=$(interchain-security-pd keys show simon --keyring-backend test --home ./provider --output json | jq '.address')
 
 #Add account address to genesis
