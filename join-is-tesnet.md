@@ -119,9 +119,10 @@ sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" <prov-node-dir>/config
 
 # Check your account balance
 interchain-security-pd q bank balances $(jq -r .address <provider-keyname>_keypair.json) --home <prov-node-dir>
-
-* Ask to get your local account fauceted or use the command below if you have access to another account at least extra `1000000stake` tokens.*
 ```
+* Ask to get your local account fauceted or use the command below if you have access to another account at least extra `1000000stake` tokens.*
+
+ ```
 # Get local account addresses
 ACCOUNT_ADDR=$(interchain-security-pd keys show <your-keyname> \
        --home /<prov-node-dir> --output json | jq '.address')
