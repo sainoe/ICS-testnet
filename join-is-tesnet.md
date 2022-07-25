@@ -124,7 +124,7 @@ Verify your account balance using the command below.
 sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" /<prov-node-dir>/config/client.toml
 
 # Check your account balance
-interchain-security-pd q bank balances $(jq -r .address /<prov-node-dir>/<provider-keyname_keypair>.json) --home <prov-node-dir>
+interchain-security-pd q bank balances $(jq -r .address /<prov-node-dir>/<provider-keyname_keypair>.json) --home /<prov-node-dir>
 ```
 * Ask to get your local account fauceted or use the command below if you have access to another account at least extra `1000000stake` tokens.*
 
@@ -151,7 +151,7 @@ interchain-security-pd tx staking create-validator \
             --pubkey $VAL_PUBKEY \
             --from <provider-keyname> \
             --keyring-backend test \
-            --home <prov-node-dir> \
+            --home /<prov-node-dir> \
             --chain-id provider \
             --commission-max-change-rate 0.01 \
             --commission-max-rate 0.2 \
@@ -164,7 +164,7 @@ interchain-security-pd tx staking create-validator \
 Verify that your validator node is now part of the validator-set.
 
 ```
-interchain-security-pd q tendermint-validator-set --home <prov-node-dir>
+interchain-security-pd q tendermint-validator-set --home /<prov-node-dir>
 ```  
 
 ---
