@@ -1,6 +1,6 @@
 ## Interchain-Security Testnet
 
-This guide contains the instructions to setup a Interchain-Security Testnet. For the sake of simplicity, both provider and consumer chains run a single node chorum. Yet, after the completition of this tutorial you have the possibility to add other nodes to the networks by following these complementary intructions [guide](https://github.com/sainoe/IS-testnet/blob/main/join-is-tesnet.md).
+This guide contains the instructions to setup a Interchain-Security Testnet. For the sake of simplicity, both provider and consumer chains run a single node chorum. After the completition of this tutorial you have the possibility to add other nodes to the networks by following these complementary intructions [guide](https://github.com/sainoe/IS-testnet/blob/main/join-is-tesnet.md).
 
 ---
 
@@ -46,8 +46,9 @@ This command will shorten the voting period to 3 minutes in order to make pass a
 
 ```
 jq ".app_state.gov.voting_params.voting_period = \"180s\"" \
-    /<prov-node-dir>/config/genesis.json > /<prov-node-dir>/edited_genesis.json && \
-    mv /<prov-node-dir>/edited_genesis.json /<prov-node-dir>/config/genesis.json
+    /<prov-node-dir>/config/genesis.json > /<prov-node-dir>/edited_genesis.json
+
+mv /<prov-node-dir>/edited_genesis.json /<prov-node-dir>/config/genesis.json
 ```  
 <br/><br/>
 
@@ -63,11 +64,11 @@ __4. Add funds to account__
 To set an initial account into the genesis states use the command bellow. It will allocates `1000000000` "stake" tokens to our local account.
 ```
 # Get local account address
-PROV_ACCOUNT_ADDR=$(interchain-security-pd keys show <provider-keyname> \
-       --home /<prov-node-dir> --output json | jq '.address')
+PROV_ACCOUNT_ADDR=$(jq -r .address /<prov-node-dir>/<provider_keyname_keypair.json>)
 
 $ Add tokens
-interchain-security-pd add-genesis-account $PROV_ACCOUNT_ADDR 1000000000stake --home /<prov-node-dir>
+interchain-security-pd add-genesis-account $PROV_ACCOUNT_ADDR 1000000000stake \
+    --keyring-backend test --home /<prov-node-dir>
 ```
 <br/><br/>
 
@@ -76,7 +77,10 @@ To get our validator signing the genesis block (and to agree that this is the co
 
 ```
 interchain-security-pd gentx <provider-keyname> 100000000stake \
-    --moniker <provider-node-moniker> --chain-id provider --home /<prov-node-dir>
+    --keyring-backend test \
+    --moniker <provider-node-moniker> \
+    --chain-id provider \
+    --home /<prov-node-dir>
 ```  
 
 *This command generates a node keypair and use it to sign another "gentx" transaction file. Both files a stored in the `/<prov-node-dir>/config/` folder*   
@@ -85,13 +89,19 @@ interchain-security-pd gentx <provider-keyname> 100000000stake \
 __6. Build the complete genesis__  
 This command appends the gentx data into the genesis states.  
 
-`interchain-security-pd collect-gentxs --home /<prov-node-dir>`  
+```
+interchain-security-pd collect-gentxs --home /<prov-node-dir> \
+    --gentx-dir /<prov-node-dir>/config/gentx/
+```  
 <br/><br/>
 
 __7. Setup client RPC endpoint__  
 This  command updates the consumer node RPC client config and allow to query the chain states.  
     
-`sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26658\"/" /<prov-node-dir>/config/client.toml`
+```
+sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26658\"/" \
+    /<prov-node-dir>/config/client.toml
+```
 <br/><br/>  
 
 __8. Start the Provider chain__  
@@ -143,13 +153,16 @@ This command below will create a governance proposal and allow us to vote for it
 interchain-security-pd tx gov submit-proposal \
        create-consumer-chain consumer-proposal.json \
        --keyring-backend test \
-       --chain-id provider --from <provider-keyname> --home /<prov-node-dir> -b block
+       --chain-id provider \
+       --from <provider-keyname> \
+       --home /<prov-node-dir> \
+       -b block
 
 #vote yes
 interchain-security-pd tx gov vote 1 yes --from <provider-keyname> \
        --keyring-backend test --chain-id provider --home /<prov-node-dir> -b block
 
-#check that the proposal status is now `PROPOSAL_STATUS_PASSED`
+#Verify that the proposal status is now `PROPOSAL_STATUS_PASSED`
 interchain-security-pd q gov proposal 1 --home /<prov-node-dir>
 ```
 
@@ -167,7 +180,7 @@ __0. Remove network directory__
 __1. Create an initial genesis__  
 Create the initial genesis file (`/<cons-node-dir>/config/genesis.json`) with the following command:
   
-`interchain-security-cd init --chain-id consumer <consumer-node-moniker> --home /<cons-node-dir>`  
+`interchain-security-cd init <consumer-node-moniker> --chain-id consumer  --home /<cons-node-dir>`  
 <br/><br/>
 
 __2. Create an account keypair__  
@@ -175,7 +188,7 @@ As for the provider chain, this command below will create an account keypair and
 
 ```
 interchain-security-cd keys add <consumer-keyname> --home /<cons-node-dir> \
-    --output json > <consumer_keyname_keypair>.json 2>&1
+    --keyring-backend test --output json > /<cons-node-dir>/<consumer_keyname_keypair>.json 2>&1
 ```  
 <br/><br/>
 
@@ -184,24 +197,29 @@ To set an initial account into the chain genesis states using the following comm
 
 ```
 #Get local account address
-CONS_ACCOUNT_ADDR=$(interchain-security-pd keys show simon --keyring-backend test --home ./provider --output json | jq '.address')
+CONS_ACCOUNT_ADDR=$(jq -r .address /<cons-node-dir>/<consumer_keyname_keypair>.json)
 
 #Add account address to genesis
-interchain-security-cd add-genesis-account $CONS_ACCOUNT_ADDR 1000000000stake --home /<cons-node-dir>
+interchain-security-cd add-genesis-account $CONS_ACCOUNT_ADDR 1000000000stake \
+    --keyring-backend test --home /<cons-node-dir>
  ```  
 <br/><br/>  
 
 __4. Get the genesis consumer chain state from the provider chain__  
 The CCV genesis states of the consumer chain are retrieved using the query below.  
 
-`interchain-security-cd query provider consumer-genesis consumer --home /<prov-node-dir> -o json > ccvconsumer_genesis.json`  
+```
+interchain-security-pd query provider consumer-genesis consumer \
+    --home /<prov-node-dir> -o json > ccvconsumer_genesis.json
+```
 
-Insert these CCV states into the initial local node genesis file using this command below.  
+Insert the CCV states into the initial local node genesis file using this command below.  
 
 ```
 jq -s '.[0].app_state.ccvconsumer = .[1] | .[0]' /<cons-node-dir>/config/genesis.json ccvconsumer_genesis.json > \
-      /<cons-node-dir>/edited_genesis.json && \
-      mv /<cons-node-dir>/edited_genesis.json /<cons-node-dir>/config/genesis.json
+      /<cons-node-dir>/edited_genesis.json 
+
+mv /<cons-node-dir>/edited_genesis.json /<cons-node-dir>/config/genesis.json
 ```
 <br/><br/>
 
@@ -301,24 +319,26 @@ hermes keys delete --chain consumer --all
 hermes keys delete --chain provider --all
 
 #Import accounts key
-hermes keys add --key-file <consumer_keyname_keypair>.json --chain consumer
-hermes keys add --key-file <provider_keyname_keypair>.json --chain provider
+hermes keys add --key-file /<cons-node-dir>/<consumer_keyname_keypair>.json --chain consumer
+hermes keys add --key-file /<prov-node-dir>/<provider_keyname_keypair>.json --chain provider
 ```
+
 <br/><br/>
+
 __3. Create connection and chanel__  
 These commands below establish the IBC connection and channel between the consumer chain and the provider chain.  
 ```
-hermes create connection\
-    --a-chain consumer\
-    --a-client 07-tendermint-0\
+hermes create connection \
+    --a-chain consumer \
+    --a-client 07-tendermint-0 \
     --b-client 07-tendermint-0
 
-hermes create channel\
-    --a-chain consumer\
-    --a-port consumer\
-    --b-port provider\
-    --order ordered\
-    --channel-version 1\
+hermes create channel \
+    --a-chain consumer \
+    --a-port consumer \
+    --b-port provider \
+    --order ordered \
+    --channel-version 1 \
     --a-connection connection-0
 ```  
 <br/><br/>
@@ -328,12 +348,6 @@ The command bellow run the Hermes daemon in listen-mode.
     
 `hermes --json start &> ~/.hermes/logs &`
 <br/><br/>
-  
-__5. Query the consumer chain node__  
-Query the consumer chain and check that the validator node was added to the validator set.  
-    
-
-`interchain-securityd q tendermint-validator-set --home <consumer-node-dir>`
 
 ---
 
@@ -350,7 +364,7 @@ DELEGATIONS=$(interchain-security-pd q staking delegations \
 OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
 # Delegate tokens
-interchain-security-pdd tx staking delegate $OPERATOR_ADDR 1000000stake \
+interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
                 --from <provider-keyname> \
                 --keyring-backend test \
                 --home <prov-node-dir> \
