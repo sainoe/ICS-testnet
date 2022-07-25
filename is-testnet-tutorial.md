@@ -46,8 +46,9 @@ This command will shorten the voting period to 3 minutes in order to make pass a
 
 ```
 jq ".app_state.gov.voting_params.voting_period = \"180s\"" \
-    /<prov-node-dir>/config/genesis.json > /<prov-node-dir>/edited_genesis.json && \
-    mv /<prov-node-dir>/edited_genesis.json /<prov-node-dir>/config/genesis.json
+    /<prov-node-dir>/config/genesis.json > /<prov-node-dir>/edited_genesis.json
+
+mv /<prov-node-dir>/edited_genesis.json /<prov-node-dir>/config/genesis.json
 ```  
 <br/><br/>
 
@@ -66,7 +67,8 @@ To set an initial account into the genesis states use the command bellow. It wil
 PROV_ACCOUNT_ADDR=$(jq -r .address /<prov-node-dir>/<provider_keyname_keypair.json>)
 
 $ Add tokens
-interchain-security-pd add-genesis-account $PROV_ACCOUNT_ADDR 1000000000stake --home /<prov-node-dir>
+interchain-security-pd add-genesis-account $PROV_ACCOUNT_ADDR 1000000000stake \
+    --keyring-backend test --home /<prov-node-dir>
 ```
 <br/><br/>
 
@@ -75,7 +77,10 @@ To get our validator signing the genesis block (and to agree that this is the co
 
 ```
 interchain-security-pd gentx <provider-keyname> 100000000stake \
-    --keyring-backend test --moniker <provider-node-moniker> --chain-id provider --home /<prov-node-dir>
+    --keyring-backend test \
+    --moniker <provider-node-moniker> \
+    --chain-id provider \
+    --home /<prov-node-dir>
 ```  
 
 *This command generates a node keypair and use it to sign another "gentx" transaction file. Both files a stored in the `/<prov-node-dir>/config/` folder*   
@@ -212,8 +217,9 @@ Insert the CCV states into the initial local node genesis file using this comman
 
 ```
 jq -s '.[0].app_state.ccvconsumer = .[1] | .[0]' /<cons-node-dir>/config/genesis.json ccvconsumer_genesis.json > \
-      /<cons-node-dir>/edited_genesis.json && \
-      mv /<cons-node-dir>/edited_genesis.json /<cons-node-dir>/config/genesis.json
+      /<cons-node-dir>/edited_genesis.json 
+
+mv /<cons-node-dir>/edited_genesis.json /<cons-node-dir>/config/genesis.json
 ```
 <br/><br/>
 
