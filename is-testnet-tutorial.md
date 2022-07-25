@@ -315,27 +315,38 @@ __2. Import keypair accounts to the IBC-Relayer__
 Import the acount keypairs to the relayer using the following command.  
 ```
 #Delete all previous keys in relayer
-hermes keys delete consumer -a
-hermes keys delete provider -a
+hermes keys delete --chain consumer --all
+hermes keys delete --chain provider --all
 
 #Import accounts key
-hermes keys restore --mnemonic  "$(jq -r .mnemonic /<cons-node-dir>/<consumer_keyname_keypair>.json)" consumer
-hermes keys restore --mnemonic  "$(jq -r .mnemonic /<prov-node-dir>/<provider_keyname_keypair>.json)" provider
+hermes keys add --key-file /<cons-node-dir>/<consumer_keyname_keypair>.json --chain consumer
+hermes keys add --key-file /<prov-node-dir>/<provider_keyname_keypair>.json --chain provider
 ```
+
 <br/><br/>
+
 __3. Create connection and chanel__  
 These commands below establish the IBC connection and channel between the consumer chain and the provider chain.  
 ```
-hermes create connection consumer --client-a 07-tendermint-0 --client-b 07-tendermint-0  
+hermes create connection \
+    --a-chain consumer \
+    --a-client 07-tendermint-0 \
+    --b-client 07-tendermint-0
 
-hermes create channel consumer --port-a consumer --port-b provider -o ordered --channel-version 1 connection-0
+hermes create channel \
+    --a-chain consumer \
+    --a-port consumer \
+    --b-port provider \
+    --order ordered \
+    --channel-version 1 \
+    --a-connection connection-0
 ```  
 <br/><br/>
 
 __4. Start Hermes__  
 The command bellow run the Hermes daemon in listen-mode.  
     
-`hermes -j start &> ~/.hermes/logs &`
+`hermes --json start &> ~/.hermes/logs &`
 <br/><br/>
 
 ---
