@@ -358,7 +358,7 @@ __1. Delegate tokens__
 ```
 # Get validator delegations
 DELEGATIONS=$(interchain-security-pd q staking delegations \
-  $(jq -r .address /<prov-node-dir>/<provider_keyname_keypair>.json) --home <prov-node-dir> -o json)
+  $(jq -r .address /<prov-node-dir>/<provider_keyname_keypair>.json) --home /<prov-node-dir> -o json)
 
 # Get validator operator address
 OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
@@ -367,7 +367,7 @@ OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.v
 interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
                 --from <provider-keyname> \
                 --keyring-backend test \
-                --home <prov-node-dir> \
+                --home /<prov-node-dir> \
                 --chain-id provider \
                 -y -b block
 ```
@@ -378,8 +378,8 @@ This commands below will print the updated validator consensus info.
 
 ```
 # Query provider chain valset
-interchain-security-pd q tendermint-validator-set --home <prov-node-dir>
+interchain-security-pd q tendermint-validator-set --home /<prov-node-dir>
     
 # Query provider chain valset    
-interchain-security-pd q tendermint-validator-set --home <cons-node-dir>
+interchain-security-pd q tendermint-validator-set --home /<cons-node-dir>
 ```
