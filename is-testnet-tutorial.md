@@ -267,7 +267,7 @@ tee ~/.hermes/config.toml<<EOF
 [[chains]]
 account_prefix = "cosmos"
 clock_drift = "5s"
-gas_adjustment = 0.1
+gas_multiplier = 1.1
 grpc_addr = "tcp://localhost:9081"
 id = "consumer"
 key_name = "relayer"
@@ -289,7 +289,7 @@ websocket_addr = "ws://localhost:26648/websocket"
 [[chains]]
 account_prefix = "cosmos"
 clock_drift = "5s"
-gas_adjustment = 0.1
+gas_multiplier = 1.1
 grpc_addr = "tcp://localhost:9091"
 id = "provider"
 key_name = "relayer"
