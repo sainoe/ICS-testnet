@@ -221,7 +221,7 @@ hermes create channel \
 
 sleep 5
 
-hermes -j start &> ~/.hermes/logs &
+hermes --json start &> ~/.hermes/logs &
 
 interchain-security-pd q tendermint-validator-set --home ${HOME_DIR}/provider
 interchain-security-cd q tendermint-validator-set --home ${HOME_DIR}/consumer
@@ -230,7 +230,7 @@ DELEGATIONS=$(interchain-security-pd q staking delegations \
 	$(jq -r .address simon_keypair.json) \
 	--home ${HOME_DIR}/provider -o json)
 
-OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r .delegation_responses[0].delegation.validator_address)
+OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
 interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
        	--from simon \
