@@ -9,8 +9,6 @@ The cross chain validation protocol specification is available [here](https://gi
 
 ## Instructions
 
----
-
 ### Build Docker image
 `docker build --tag is-testnet .`
 
