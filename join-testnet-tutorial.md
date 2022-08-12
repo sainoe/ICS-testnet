@@ -23,18 +23,18 @@ Choose a directory name (e.g. `~/provider-recruit`) to store the provider chain 
 __1. Remove any existing directory__  
 
 ```
-PROV-NODE-DIR="~/provider-recruit"
-rm -rf $PROV-NODE-DIR
+export PROV_NODE_DIR="~/provider-recruit"
+rm -rf $PROV_NODE_DIR
 ```  
  <br/><br/>  
 
 __2. Create the node directory__  
-The command below initializes the node's configuration files. The `$PROV-NODE-MONIKER` argument is a public moniker that will identify your validator, i.e. `coop-validator`).Additionally, in this guide its assumed that the provider and consumer chains id are self-titled.
+The command below initializes the node's configuration files. The `$PROV_NODE_MONIKER` argument is a public moniker that will identify your validator, i.e. `coop-validator`).Additionally, in this guide its assumed that the provider and consumer chains id are self-titled.
 ```
-PROV-NODE-MONIKER=coop-validator
-PROV-CHAIN-ID=provider
+PROV_NODE_MONIKER=coop-validator
+PROV_CHAIN_ID=provider
 
-interchain-security-pd init $PROV-NODE-MONIKER --chain-id $PROV-CHAIN-ID --home $PROV-NODE-DIR
+interchain-security-pd init $PROV_NODE_MONIKER --chain-id $PROV_CHAIN_ID --home $PROV_NODE_DIR
 ```
 <br/><br/>
 
@@ -42,9 +42,9 @@ __3. Generate the node keypair__
 This following step creates a public/private keypair and stores it under the given keyname of your choice. The output is also exported into a json file for later use.
 
 ```
-$PROV-KEY=provider-key
+PROV_KEY=provider-key
 
-interchain-security-pd keys add $PROV-KEY --home $PROV-NODE-DIR --keyring-backend test --output json > ${PROV-NODE-DIR}/${PROV-KEY}.json 2>&1
+interchain-security-pd keys add $PROV_KEY --home $PROV_NODE_DIR --keyring-backend test --output json > ${PROV_NODE_DIR}/${PROV_KEY}.json 2>&1
 ```  
 
 * *The `--keyring-backend` option can be removed if you would prefer securing the account with a password*
@@ -52,11 +52,11 @@ interchain-security-pd keys add $PROV-KEY --home $PROV-NODE-DIR --keyring-backen
 
 __4. Get the Provider chain genesis file__
 Import the provider chain genesis file from the IS-Testnet you want to join. You can either ask to the testnet coordinator or
-, if you have completed the IS-testnet tutorial, you can copy the genesis file using the following command: 
+, if you have completed the IS-testnet tutorial and set up your own coordinator node, you can copy the genesis file using the following command: 
 
 ```
-$PROV-COORDINATOR-DIR="~/provider"
-cp ${PROV-COORDINATOR-DIR}/config/genesis.json ${PROV-COORDINATOR-DIR}/config/genesis.json
+PROV_COORDINATOR_DIR="~/provider"
+cp ${PROV_COORDINATOR_DIR}/config/genesis.json ${PROV_NODE_DIR}/config/genesis.json
 ```  
 
 <br/><br/>
@@ -69,17 +69,17 @@ This command will run the node using the coordinator persistent peer address ret
 MY_IP=$(host -4 myip.opendns.com resolver1.opendns.com | grep "address" | awk '{print $4}')
 
 # Get persistent peer
-COORDINATOR_P2P_ADDRESS=$(jq -r '.app_state.genutil.gen_txs[0].body.memo' ${PROV-NODE-DIR}/config/genesis.json)
+COORDINATOR_P2P_ADDRESS=$(jq -r '.app_state.genutil.gen_txs[0].body.memo' ${PROV_NODE_DIR}/config/genesis.json)
 
 # Run node
-interchain-security-pd start --home $PROV-NODE-DIR \
+interchain-security-pd start --home $PROV_NODE_DIR \
         --rpc.laddr tcp://${MY_IP}:26658 \
         --grpc.address ${MY_IP}:9091 \
         --address tcp://${MY_IP}:26655 \
         --p2p.laddr tcp://${MY_IP}:26656 \
         --grpc-web.enable=false \
         --p2p.persistent_peers $COORDINATOR_P2P_ADDRESS \
-        &> ${PROV-NODE-DIR}/logs &
+        &> ${PROV_NODE_DIR}/logs &
 ```
    
    
@@ -95,7 +95,7 @@ need to change its IP address to 127.0.0.1.*
 __6. Setup client RPC endpoint__  
 This command changes the default RPC client endpoint port of our node. It is exposed by Tendermint and allows us to query the chains' states and to submit transactions.This command below change the client RPC endpoint using the following command.
 
-sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" ${PROV-NODE-DIR}/config/client.toml
+sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" ${PROV_NODE_DIR}/config/client.toml
 
 
 <br/><br/>
@@ -107,19 +107,19 @@ Verify your account balance using the command below.
 ```
 
 # Check your account balance
-interchain-security-pd q bank balances $(jq -r .address ${PROV-NODE-DIR}/${PROV-KEY}.json) --home $PROV-NODE-DIR
+interchain-security-pd q bank balances $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR
 ```
 
 * *Ask to get your local account fauceted or use the command below if you have access to another account at least extra `1000000stake` tokens.*
 
  ```
 # Get local account addresses
-ACCOUNT_ADDR=$(interchain-security-pd keys show $PROV-KEY \
-       --keyring-backend test --home $PROV-NODE-DIR --output json | jq -r '.address')
+ACCOUNT_ADDR=$(interchain-security-pd keys show $PROV_KEY \
+       --keyring-backend test --home $PROV_NODE_DIR --output json | jq -r '.address')
 
 # Run this command 
 interchain-security-pd tx bank send <source-address> <destination-address> \
-        1000000stake --from <source-keyname> --keyring-backend test --home $PROV-NODE-DIR --chain-id provider -b block 
+        1000000stake --from <source-keyname> --keyring-backend test --home $PROV_NODE_DIR --chain-id provider -b block 
 ```
 
 <br/><br/>
@@ -130,8 +130,8 @@ The following steps will explain you how to configure and run a validator node f
 __1. Remove any existing directory__  
 
 ```
-CONS-NODE-DIR="~/consumer"
-rm -rf $CONS-NODE-DIR
+CONS_NODE_DIR="~/consumer"
+rm -rf $CONS_NODE_DIR
 ```
 <br/><br/>
 
@@ -140,10 +140,10 @@ __2. Create the node directory__
 This command generates the required node directory stucture along with the intial genesis file.  
 
 ```
-CONS-NODE-MONIKER=consumer-node-moniker
-CONS-CHAIN-ID=consumer
+CONS_NODE_MONIKER=consumer-node-moniker
+CONS_CHAIN_ID=consumer
 
-interchain-security-cd init $CONS-NODE-MONIKER --chain-id $CONS-CHAIN-ID --home $CONS-NODE-DIR
+interchain-security-cd init $CONS_NODE_MONIKER --chain-id $CONS_CHAIN_ID --home $CONS_NODE_DIR
 ```
 
 <br/><br/>
@@ -152,10 +152,10 @@ __3. Generate a node keypair__
 
 This command create a keypair for the consumer node.
 ```
-$CONS-KEY=consumer-key
+$CONS_KEY=consumer-key
 
-interchain-security-cd keys add $CONS-KEY \
-    --home $CONS-NODE-DIR --output json > ${CONS-NODE-DIR}/${CONS-KEY}.json 2>&1
+interchain-security-cd keys add $CONS_KEY \
+    --home $CONS_NODE_DIR --output json > ${CONS_NODE_DIR}/${CONS_KEY}.json 2>&1
 ```
 <br/><br/>
 
@@ -170,16 +170,16 @@ __5. Import validator keypair node__
 The following will copy the required validator keypair files in order to run the same node on the consumer chain.  
 
 ```
-cp ${PROV-NODE-DIR}/config/node_key.json ${CONS-NODE-DIR}/config/node_key.json
+cp ${PROV_NODE_DIR}/config/node_key.json ${CONS_NODE_DIR}/config/node_key.json
 
-cp ${PROV-NODE-DIR}/config/priv_validator_key.json ${CONS-NODE-DIR}/config/priv_validator_key.json
+cp ${PROV_NODE_DIR}/config/priv_validator_key.json ${CONS_NODE_DIR}/config/priv_validator_key.json
 ```
 <br/><br/>
 
 __6. Setup client RPC endpoint__  
 This command updates the consumer node RPC client config and allow to query the chain states as explained in the above.  
   
-`sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26648\"/" ${CONS-NODE-DIR}/config/client.toml`
+`sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26648\"/" ${CONS_NODE_DIR}/config/client.toml`
 <br/><br/>
 
 __7. Run the validator node__  
@@ -188,19 +188,19 @@ This command will run the validator on the consumer chain.
 
 ```
 # Get persistent peer address
-COORDINATOR_P2P_ADDRESS=$(jq -r '.app_state.genutil.gen_txs[0].body.memo' ${PROV-NODE-DIR}/config/genesis.json)
+COORDINATOR_P2P_ADDRESS=$(jq -r '.app_state.genutil.gen_txs[0].body.memo' ${PROV_NODE_DIR}/config/genesis.json)
 
 # Get consumer chain coordinator node p2p address
 CONSUMER_P2P_ADDRESS=$(echo $COORDINATOR_P2P_ADDRESS | sed 's/:.*/:26646/')
 
-interchain-security-cd start --home $CONS-NODE-DIR \
+interchain-security-cd start --home $CONS_NODE_DIR \
         --rpc.laddr tcp://${MY_IP}:26648 \
         --grpc.address ${MY_IP}:9081 \
         --address tcp://${MY_IP}:26645 \
         --p2p.laddr tcp://${MY_IP}:26646 \
         --grpc-web.enable=false \
         --p2p.persistent_peers $CONSUMER_P2P_ADDRESS \
-        &> ${CONS-NODE-DIR}logs &
+        &> ${CONS_NODE_DIR}logs &
 ```
 
 <br/><br/>
@@ -211,20 +211,20 @@ Now that both consumer and provider nodes are running, we can bond it to be a va
 
 ```
 # Get the validator node pubkey 
-VAL-PUBKEY=$(interchain-security-pd tendermint show-validator --home $PROV-NODE-DIR)
+VAL_PUBKEY=$(interchain-security-pd tendermint show-validator --home $PROV_NODE_DIR)
 
 # Create the validator
 interchain-security-pd tx staking create-validator \
             --amount 1000000stake \
-            --pubkey $VAL-PUBKEY \
-            --from $PROV-KEY \
+            --pubkey $VAL_PUBKEY \
+            --from $PROV_KEY \
             --keyring-backend test \
-            --home $PROV-NODE-DIR \
+            --home $PROV_NODE_DIR \
             --chain-id provider \
             --commission-max-change-rate 0.01 \
             --commission-max-rate 0.2 \
             --commission-rate 0.1 \
-            --moniker $PROV-MONIKER \
+            --moniker $PROV_MONIKER \
             --min-self-delegation 1 \
             -b block -y
 ```
@@ -232,9 +232,9 @@ interchain-security-pd tx staking create-validator \
 Verify that your validator node is now part of the validator-set.
 
 ```
-interchain-security-pd q tendermint-validator-set --home $PROV-NODE-DIR
+interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
 
-interchain-security-pd q tendermint-validator-set --home $PROV-NODE-DIR
+interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
 ```  
 
 ---
@@ -247,18 +247,18 @@ __1. Delegate tokens__
 ```
 # Get validator delegations
 DELEGATIONS=$(interchain-security-pd q staking delegations \
-    $(jq -r .address ${PROV-KEY}.json) --home $PROV-NODE-DIR -o json)
+    $(jq -r .address ${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
 
 # Get validator operator address
-OPERATOR-ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
+OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
 
 # Delegate tokens
-interchain-security-pd tx staking delegate $OPERATOR-ADDR 1000000stake \
-                --from ${PROV-KEY} \
+interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
+                --from ${PROV_KEY} \
                 --keyring-backend test \
-                --home $PROV-NODE-DIR \
-                --chain-id $PROV-CHAIN-ID \
+                --home $PROV_NODE_DIR \
+                --chain-id $PROV_CHAIN_ID \
                 -y -b block
 ```
 
@@ -269,8 +269,8 @@ This commands below will print the updated validator set.
 
 ```
 # Get validator consensus address
-VAL-ADDR=$(interchain-security-pd tendermint show-address --home $PROV-NODE-DIR)
+VAL_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
         
 # Query validator consenus info        
-interchain-security-cd q tendermint-validator-set --home $CONS-NODE-DIR | grep -A11 $VAL-ADDR
+interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VAL_ADDR
 ```
