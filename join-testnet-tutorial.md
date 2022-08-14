@@ -135,7 +135,7 @@ __2. Create the node directory__
 This command generates the required node directory stucture along with the intial genesis file.  
 
 ```
-CONS_NODE_MONIKER=consumer-node-moniker
+CONS_NODE_MONIKER=change-me
 CONS_CHAIN_ID=consumer
 
 interchain-security-cd init $CONS_NODE_MONIKER --chain-id $CONS_CHAIN_ID --home $CONS_NODE_DIR
@@ -154,9 +154,12 @@ interchain-security-cd keys add $CONS_KEY \
 ```
 <br/><br/>
 
-__4. Import Consumer chain genesis file__  
+__4. Get the Consumer chain genesis file__  
+Download the consumer chain genesis file to the correct location
 
-Import the consumer genesis file to your local node folder as explained in the [provider chain section](#4-get-the-provider chain-genesis-file).
+```
+wget -O ${CONS_NODE_DIR}/config/genesis.json  https://pastebin.com/raw/TthJC0Fh
+``` 
 
 <br/><br/>
 
@@ -174,7 +177,9 @@ cp ${PROV_NODE_DIR}/config/priv_validator_key.json ${CONS_NODE_DIR}/config/priv_
 __6. Setup client RPC endpoint__  
 This command updates the consumer node RPC client config and allow to query the chain states as explained in the above.  
   
-`sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26648\"/" ${CONS_NODE_DIR}/config/client.toml`
+```
+sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26648\"/" ${CONS_NODE_DIR}/config/client.toml
+```
 <br/><br/>
 
 __7. Run the validator node__  
@@ -195,7 +200,7 @@ interchain-security-cd start --home $CONS_NODE_DIR \
         --p2p.laddr tcp://${MY_IP}:26646 \
         --grpc-web.enable=false \
         --p2p.persistent_peers $CONSUMER_P2P_ADDRESS \
-        &> ${CONS_NODE_DIR}logs &
+        &> ${CONS_NODE_DIR}/logs &
 ```
 
 <br/><br/>
@@ -229,7 +234,7 @@ Verify that your validator node is now part of the validator-set.
 ```
 interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
 
-interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
+interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR
 ```  
 
 ---
