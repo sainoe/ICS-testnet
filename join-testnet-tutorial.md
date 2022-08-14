@@ -125,7 +125,7 @@ The following steps will explain you how to configure and run a validator node f
 __1. Remove any existing directory__  
 
 ```
-CONS_NODE_DIR="~/consumer"
+CONS_NODE_DIR=~/consumer
 rm -rf $CONS_NODE_DIR
 ```
 <br/><br/>
