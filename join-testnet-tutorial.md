@@ -23,7 +23,7 @@ Choose a directory name (e.g. `~/provider-recruit`) to store the provider chain 
 __1. Remove any existing directory__  
 
 ```
-export PROV_NODE_DIR="~/provider-recruit"
+PROV_NODE_DIR=~/provider
 rm -rf $PROV_NODE_DIR
 ```  
  <br/><br/>  
@@ -31,7 +31,7 @@ rm -rf $PROV_NODE_DIR
 __2. Create the node directory__  
 The command below initializes the node's configuration files. The `$PROV_NODE_MONIKER` argument is a public moniker that will identify your validator, i.e. `coop-validator`).Additionally, in this guide its assumed that the provider and consumer chains id are self-titled.
 ```
-PROV_NODE_MONIKER=coop-validator
+PROV_NODE_MONIKER=change-me
 PROV_CHAIN_ID=provider
 
 interchain-security-pd init $PROV_NODE_MONIKER --chain-id $PROV_CHAIN_ID --home $PROV_NODE_DIR
@@ -51,12 +51,10 @@ interchain-security-pd keys add $PROV_KEY --home $PROV_NODE_DIR --keyring-backen
 <br/><br/>
 
 __4. Get the Provider chain genesis file__
-Import the provider chain genesis file from the IS-Testnet you want to join. You can either ask to the testnet coordinator or
-, if you have completed the IS-testnet tutorial and set up your own coordinator node, you can copy the genesis file using the following command: 
+Download the provider chain genesis file to the correct location
 
 ```
-PROV_COORDINATOR_DIR="~/provider"
-cp ${PROV_COORDINATOR_DIR}/config/genesis.json ${PROV_NODE_DIR}/config/genesis.json
+wget -O ${PROV_NODE_DIR}/config/genesis.json  https://pastebin.com/raw/LPnRfMXW
 ```  
 
 <br/><br/>
@@ -83,11 +81,7 @@ interchain-security-pd start --home $PROV_NODE_DIR \
 ```
    
    
-* *If you get the error "can't bind address xxx.xxx.x.x", try using `127.0.0.1` instead.*   
-
-
-* *If you're running the coordinator node on the same local machine, you might
-need to change its IP address to 127.0.0.1.*   
+* *If you get the error "can't bind address xxx.xxx.x.x", try using `127.0.0.1` instead.* 
 
 
 <br/><br/>
@@ -95,8 +89,9 @@ need to change its IP address to 127.0.0.1.*
 __6. Setup client RPC endpoint__  
 This command changes the default RPC client endpoint port of our node. It is exposed by Tendermint and allows us to query the chains' states and to submit transactions.This command below change the client RPC endpoint using the following command.
 
+```
 sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" ${PROV_NODE_DIR}/config/client.toml
-
+```
 
 <br/><br/>
 
@@ -104,8 +99,8 @@ sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" ${PROV_NODE_DIR}/confi
 __7. Fund your account__   
 Make sure your node account has at least `1000000stake` coins in order to stake.
 Verify your account balance using the command below.
-```
 
+```
 # Check your account balance
 interchain-security-pd q bank balances $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR
 ```
