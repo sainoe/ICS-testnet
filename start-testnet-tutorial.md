@@ -34,8 +34,8 @@ __0. Remove any existing node directory__
 Start by choosing a directory name, like `~/provider` to store the provider chain node files.
 
 ```
-PROV_NODE_DIR="~/provider"
-rm -rf $PROV_NODE_DIR` <br/><br/>
+PROV_NODE_DIR=~/provider-coordinator
+rm -rf $PROV_NODE_DIR`
 ```
 
 <br/><br/>
