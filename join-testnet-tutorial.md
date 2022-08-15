@@ -51,11 +51,12 @@ interchain-security-pd keys add $PROV_KEY --home $PROV_NODE_DIR --keyring-backen
 <br/><br/>
 
 __4. Get the Provider chain genesis file__
-Download the provider chain genesis file to the correct location
+Download the provider chain genesis file to the correct location.
 
 ```
-wget -O ${PROV_NODE_DIR}/config/genesis.json  https://pastebin.com/raw/LPnRfMXW
-```  
+$GEN_URL=change-me
+wget -O ${PROV_NODE_DIR}/config/genesis.json $GEN_URL
+```
 
 <br/><br/>
 
@@ -155,10 +156,11 @@ interchain-security-cd keys add $CONS_KEY \
 <br/><br/>
 
 __4. Get the Consumer chain genesis file__  
-Download the consumer chain genesis file to the correct location
+Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json  https://pastebin.com/raw/TthJC0Fh
+$GEN_URL=change-me
+wget -O ${CONS_NODE_DIR}/config/genesis.json $GEN_URL
 ``` 
 
 <br/><br/>
