@@ -35,7 +35,7 @@ Start by choosing a directory name, like `~/provider` to store the provider chai
 
 ```
 PROV_NODE_DIR=~/provider-coordinator
-rm -rf $PROV_NODE_DIR`
+rm -rf $PROV_NODE_DIR
 ```
 
 <br/><br/>
