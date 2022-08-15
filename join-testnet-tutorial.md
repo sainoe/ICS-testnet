@@ -62,7 +62,7 @@ __4. Get the Provider chain genesis file__
 Download the provider chain genesis file to the correct location.
 
 ```
-wget -O ${PROV_NODE_DIR}/config/genesis.json https://pastebin.com/raw/F1TCk0Gf
+wget -O ${PROV_NODE_DIR}/config/genesis.json https://pastebin.com/raw/BpdWpHSZ
 ```
 
 <br/><br/>
