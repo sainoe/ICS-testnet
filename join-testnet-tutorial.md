@@ -275,7 +275,7 @@ The following steps show how to optionally setup the nodes' deamon to run in sys
 __1. Create service file for the nodes__  
 
 ```
-$BINARY_HOME=change-me
+BINARY_HOME=$(which interchain-security-pd)
 
 tee vim /etc/systemd/system/interchain-security-pd.service<<EOF
 [Unit]
@@ -298,6 +298,8 @@ EOF
 ```
 
 ```
+BINARY_HOME=$(which interchain-security-cd)
+  
 tee vim /etc/systemd/system/interchain-security-cd.service<<EOF
 [Unit]
 Description=Interchain Security service
