@@ -71,13 +71,9 @@ wget -O ${PROV_NODE_DIR}/config/genesis.json https://pastebin.com/raw/BpdWpHSZ
 __5. Run the node__  
 This command will run the node using the coordinator persistent peer address retrieved from the genesis state.
 ```
-# Retrieve public ip address
 MY_IP=$(host -4 myip.opendns.com resolver1.opendns.com | grep "address" | awk '{print $4}')
-
-# Get persistent peer
 COORDINATOR_P2P_ADDRESS=$(jq -r '.app_state.genutil.gen_txs[0].body.memo' ${PROV_NODE_DIR}/config/genesis.json)
 
-# Run node
 interchain-security-pd start --home $PROV_NODE_DIR \
         --rpc.laddr tcp://${MY_IP}:26658 \
         --grpc.address ${MY_IP}:9091 \
@@ -171,10 +167,7 @@ __7. Run the validator node__
 This command will run the validator on the consumer chain.  
 
 ```
-# Get persistent peer address
 COORDINATOR_P2P_ADDRESS=$(jq -r '.app_state.genutil.gen_txs[0].body.memo' ${PROV_NODE_DIR}/config/genesis.json)
-
-# Get consumer chain coordinator node p2p address
 CONSUMER_P2P_ADDRESS=$(echo $COORDINATOR_P2P_ADDRESS | sed 's/:.*/:26646/')
 
 interchain-security-cd start --home $CONS_NODE_DIR \
@@ -211,10 +204,8 @@ __9. Bond the validator__
 Now that both consumer and provider nodes are running, we can bond it to be a validator on boths chain, by submitting the following transaction to the provider chain.
 
 ```
-# Get the validator node pubkey 
 VAL_PUBKEY=$(interchain-security-pd tendermint show-validator --home $PROV_NODE_DIR)
 
-# Create the validator
 interchain-security-pd tx staking create-validator \
             --amount 1000000stake \
             --pubkey $VAL_PUBKEY \
