@@ -127,7 +127,7 @@ __3. Generate a node keypair__
 
 This command create a keypair for the consumer node.
 ```
-$CONS_KEY=consumer-key
+CONS_KEY=consumer-key
 
 interchain-security-cd keys add $CONS_KEY \
     --home $CONS_NODE_DIR --output json > ${CONS_NODE_DIR}/${CONS_KEY}.json 2>&1
