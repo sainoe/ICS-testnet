@@ -278,8 +278,8 @@ interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -
 
 <br/><br/>
 
-### Run the validatos using systemd services (optional)
-The following steps show how to optionally setup the nodes' deamon to be run as systemd services.
+### Use systemd services (optional)
+The following steps show how to optionally setup the nodes' deamon to run in systemd services.
 
 __1. Create service file for the nodes__  
 
