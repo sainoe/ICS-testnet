@@ -54,8 +54,7 @@ __4. Get the Provider chain genesis file__
 Download the provider chain genesis file to the correct location.
 
 ```
-$GEN_URL=change-me
-wget -O ${PROV_NODE_DIR}/config/genesis.json $GEN_URL
+wget -O ${PROV_NODE_DIR}/config/genesis.json https://pastebin.com/F1TCk0Gf
 ```
 
 <br/><br/>
@@ -159,8 +158,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-$GEN_URL=change-me
-wget -O ${CONS_NODE_DIR}/config/genesis.json $GEN_URL
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://pastebin.com/NEVEgcgz
 ``` 
 
 <br/><br/>
@@ -275,4 +273,68 @@ VAL_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
         
 # Query validator consenus info        
 interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VAL_ADDR
+```
+
+<br/><br/>
+
+### Run the validatos using systemd services (optional)
+The following steps show how to optionally setup the nodes' deamon to be run as systemd services.
+
+__1. Create service file for the nodes__  
+
+```
+$BINARY_HOME=change-me
+
+tee vim /etc/systemd/system/interchain-security-pd.service<<EOF
+[Unit]
+Description=Interchain Security service
+After=network-online.target
+[Service]
+User=root
+ExecStart=${BINARY_HOME}/interchain-security-pd start --home $PROV_NODE_DIR --rpc.laddr tcp://${NODE_IP}:26658 --grpc.address ${NODE_IP}:9091 --address tcp://${NODE_IP}:26655 --p2p.laddr tcp://${NODE_IP}:26656 --grpc-web.enable=false
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+Environment='DAEMON_NAME=interchain-security-pd'
+Environment='DAEMON_HOME=${BINARY_HOME}'
+Environment='DAEMON_ALLOW_DOWNLOAD_BINARIES=true'
+Environment='DAEMON_RESTART_AFTER_UPGRADE=true'
+Environment='DAEMON_LOG_BUFFER_SIZE=512'
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+```
+tee vim /etc/systemd/system/interchain-security-cd.service<<EOF
+[Unit]
+Description=Interchain Security service
+After=network-online.target
+[Service]
+User=root
+ExecStart=${BINARY_HOME}/interchain-security-cd start --home $CONS_NODE_DIR --rpc.laddr tcp://${NODE_IP}:26648 --grpc.address ${NODE_IP}:9081 --address tcp://${NODE_IP}:26645 --p2p.laddr tcp://${NODE_IP}:26646 --grpc-web.enable=false
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+Environment='DAEMON_NAME=interchain-security-cd'
+Environment='DAEMON_HOME=${BINARY_HOME}'
+Environment='DAEMON_ALLOW_DOWNLOAD_BINARIES=true'
+Environment='DAEMON_RESTART_AFTER_UPGRADE=true'
+Environment='DAEMON_LOG_BUFFER_SIZE=512'
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+<br/><br/>
+
+__2. Reload the services__  
+Run the following command to reload the services
+
+```
+systemctl daemon-reload
+systemctl restart systemd-journald
+
+# check the validators status and logs
+systemctl status interchain-security-pd
+journalctl -n 100 --no-pager`
 ```
