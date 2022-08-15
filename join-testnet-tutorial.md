@@ -142,7 +142,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://pastebin.com/raw/NEVEgcgz
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://pastebin.com/raw/GdxdnAVj
 ``` 
 
 <br/><br/>

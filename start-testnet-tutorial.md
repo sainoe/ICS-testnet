@@ -215,7 +215,7 @@ __2. Create an account keypair__
 As for the provider chain, this command below will create an account keypair and store into a json file.
 
 ```
-$CONS_KEY=consumer-key
+CONS_KEY=consumer-key
 interchain-security-cd keys add $CONS_KEY --home $CONS_NODE_DIR \
     --keyring-backend test --output json > ${CONS_NODE_DIR}/${CONS_KEY}.json 2>&1
 ```  
