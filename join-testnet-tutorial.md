@@ -103,30 +103,6 @@ sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" ${PROV_NODE_DIR}/confi
 
 <br/><br/>
 
-
-__7. Fund your account__   
-Make sure your node account has at least `1000000stake` coins in order to stake.
-Verify your account balance using the command below.
-
-```
-# Check your account balance
-interchain-security-pd q bank balances $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR
-```
-
-* *Ask to get your local account fauceted or use the command below if you have access to another account at least extra `1000000stake` tokens.*
-
- ```
-# Get local account addresses
-ACCOUNT_ADDR=$(interchain-security-pd keys show $PROV_KEY \
-       --keyring-backend test --home $PROV_NODE_DIR --output json | jq -r '.address')
-
-# Run this command 
-interchain-security-pd tx bank send <source-address> <destination-address> \
-        1000000stake --from <source-keyname> --keyring-backend test --home $PROV_NODE_DIR --chain-id provider -b block 
-```
-
-<br/><br/>
-
 ### Run a validator on the Consumer chain
 The following steps will explain you how to configure and run a validator node for joining the Consumer chain.  
 
@@ -213,8 +189,25 @@ interchain-security-cd start --home $CONS_NODE_DIR \
 
 <br/><br/>
 
+__8. Get fauceted__   
+Execute the following command to get fauceted `5000000stake` in order to have the minimum deposit and to bond your validator.
 
-__8. Bond the validator__  
+```
+# Get local account addresses
+ACCOUNT_ADDR=$(interchain-security-pd keys show $PROV_KEY \
+       --keyring-backend test --home $PROV_NODE_DIR --output json | jq -r '.address')
+
+# Request tokens 
+curl http://165.227.143.45:8000/request?address=${ACCOUNT_ADDR}&chain=provider
+
+# Check your account's balance
+interchain-security-pd q bank balances ${ACCOUNT_ADDR} --home $PROV_NODE_DIR
+```
+
+
+<br/><br/>
+
+__9. Bond the validator__  
 Now that both consumer and provider nodes are running, we can bond it to be a validator on boths chain, by submitting the following transaction to the provider chain.
 
 ```
