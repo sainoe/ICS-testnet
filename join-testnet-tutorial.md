@@ -222,6 +222,13 @@ interchain-security-pd tx staking create-validator \
             -b block -y
 ```
 <br>
+View your operator address
+  
+```
+VALCONS_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
+echo $VALCONS_ADDR
+```
+  
 Verify that your validator node is now part of the validator-set.
 
 ```
@@ -238,15 +245,9 @@ These optional steps show you how CCV updates the Consumer chain validator-set v
 
 __1. Delegate tokens__  
 ```
-# Get validator delegations
-DELEGATIONS=$(interchain-security-pd q staking delegations \
-    $(jq -r .address ${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
-
-# Get validator operator address
+DELEGATIONS=$(interchain-security-pd q staking delegations $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
 OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
-
-# Delegate tokens
 interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
                 --from ${PROV_KEY} \
                 --keyring-backend test \
@@ -262,10 +263,10 @@ This commands below will print the updated validator set.
 
 ```
 # Get validator consensus address
-VAL_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
+VALCONS_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
         
 # Query validator consenus info        
-interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VAL_ADDR
+interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
 ```
 
 <br/><br/>
