@@ -217,7 +217,7 @@ interchain-security-pd tx staking create-validator \
             --commission-max-change-rate 0.01 \
             --commission-max-rate 0.2 \
             --commission-rate 0.1 \
-            --moniker $PROV_MONIKER \
+            --moniker $PROV_NODE_MONIKER \
             --min-self-delegation 1 \
             -b block -y
 ```
