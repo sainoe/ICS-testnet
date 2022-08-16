@@ -8,7 +8,7 @@ This guide contains the instructions to setup a Interchain-Security Testnet. For
 - Go 1.18+ <sub><sup>([installation notes](https://go.dev/doc/install))<sub><sup>
 - Interchain Security binaries <sub><sup>([installation notes](#install-the-interchain-security-binary))<sub><sup>
 - Rust 1.60+ <sub><sup>([installation notes](https://www.rust-lang.org/tools/install))<sub><sup>
-- Hermes v1.0.0-rc.1 <sub><sup>([installation notes](https://hermes.informal.systems/getting_started.html))<sub><sup>
+- Hermes v0.15 <sub><sup>([installation notes](https://hermes.informal.systems/getting_started.html))<sub><sup>
 - jq  <sub><sup>([installation notes](https://stedolan.github.io/jq/download/))<sub><sup>
 
 ---
