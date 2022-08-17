@@ -125,11 +125,12 @@ sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26658\"/" \
 __8. Start the Provider chain__  
 Run the local node using the following command:
 ```
+MY_IP=$(host -4 myip.opendns.com resolver1.opendns.com | grep "address" | awk '{print $4}')
 interchain-security-pd start --home $PROV_NODE_DIR \
-        --rpc.laddr tcp://localhost:26658 \
-        --grpc.address localhost:9091 \
-        --address tcp://localhost:26655 \
-        --p2p.laddr tcp://localhost:26656 \
+        --rpc.laddr tcp://${MY_IP}:26658 \
+        --grpc.address ${MY_IP}:9091 \
+        --address tcp://${MY_IP}:26655 \
+        --p2p.laddr tcp://${MY_IP}:26656 \
         --grpc-web.enable=false \
         &> ${PROV_NODE_DIR}/logs &
 ```
@@ -139,6 +140,8 @@ Query the chain to verify your local node appears in the validators list.
 
 `interchain-security-pd q staking validators --home $PROV_NODE_DIR`
 
+* *If you are running a coordinator node on a linux-like machine you might need to increase the file open limit using this command:
+    `ulimit -n 409` in order that Tendermint runs without limitations.*
 ---
 
 ### Consumer chain proposal  
@@ -275,10 +278,10 @@ Run the local node using the following command:
 ```
 # consumer local node use the following command
 interchain-security-cd start --home $CONS_NODE_DIR \
-        --rpc.laddr tcp://localhost:26648 \
-        --grpc.address localhost:9081 \
-        --address tcp://localhost:26645 \
-        --p2p.laddr tcp://localhost:26646 \
+        --rpc.laddr tcp://${MY_IP}:26648 \
+        --grpc.address ${MY_IP}:9081 \
+        --address tcp://${MY_IP}:26645 \
+        --p2p.laddr tcp://${MY_IP}:26646 \
         --grpc-web.enable=false \
         &> ${CONS_NODE_DIR}/logs &
 ```
@@ -299,15 +302,15 @@ tee ~/.hermes/config.toml<<EOF
 account_prefix = "cosmos"
 clock_drift = "5s"
 gas_adjustment = 0.1
-grpc_addr = "tcp://localhost:9081"
+grpc_addr = "tcp://${MY_IP}:9081"
 id = "$CONS_CHAIN_ID"
 key_name = "relayer"
 max_gas = 2000000
-rpc_addr = "http://localhost:26648"
+rpc_addr = "http://${MY_IP}:26648"
 rpc_timeout = "10s"
 store_prefix = "ibc"
 trusting_period = "14days"
-websocket_addr = "ws://localhost:26648/websocket"
+websocket_addr = "ws://${MY_IP}:26648/websocket"
 
 [chains.gas_price]
        denom = "stake"
@@ -321,15 +324,15 @@ websocket_addr = "ws://localhost:26648/websocket"
 account_prefix = "cosmos"
 clock_drift = "5s"
 gas_adjustment = 0.1
-grpc_addr = "tcp://localhost:9091"
+grpc_addr = "tcp://${MY_IP}:9091"
 id = "$PROV_CHAIN_ID"
 key_name = "relayer"
 max_gas = 2000000
-rpc_addr = "http://localhost:26658"
+rpc_addr = "http://${MY_IP}:26658"
 rpc_timeout = "10s"
 store_prefix = "ibc"
 trusting_period = "14days"
-websocket_addr = "ws://localhost:26658/websocket"
+websocket_addr = "ws://${MY_IP}:26658/websocket"
 
 [chains.gas_price]
        denom = "stake"
