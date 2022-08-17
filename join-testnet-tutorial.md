@@ -34,6 +34,7 @@ __1. Remove any existing directory__
 ```
 PROV_NODE_DIR=~/provider
 rm -rf $PROV_NODE_DIR
+pkill -f interchain-security-pd
 ```  
  <br/><br/>  
 
@@ -63,7 +64,7 @@ __4. Get the Provider chain genesis file__
 Download the provider chain genesis file to the correct location.
 
 ```
-wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/BowlingRhodes
+wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/GrowlingBreed
 ```
 
 <br/><br/>
@@ -108,7 +109,9 @@ __1. Remove any existing directory__
 ```
 CONS_NODE_DIR=~/consumer
 rm -rf $CONS_NODE_DIR
+pkill -f interchain-security-cd
 ```
+
 <br/><br/>
 
 __2. Create the node directory__  
@@ -139,7 +142,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/PatsyRubble
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/GlandHolistic
 ``` 
 
 <br/><br/>
@@ -221,21 +224,21 @@ interchain-security-pd tx staking create-validator \
             --min-self-delegation 1 \
             -b block -y
 ```
-<br>
-View your operator address
   
+ <br/><br/>
+ 
+__10. Check the validator set__  
+Verify that you node was added to the validators using the following command.
+
 ```
+# Get validator consensus address
 VALCONS_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
-echo $VALCONS_ADDR
-```
+        
+# Query the chains validator set
+interchain-security-pd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
   
-Verify that your validator node is now part of the validator-set.
-
+interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
 ```
-interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
-
-interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR
-```  
 
 ---
 
@@ -255,21 +258,20 @@ interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
                 --chain-id $PROV_CHAIN_ID \
                 -y -b block
 ```
-
+  
 <br/><br/>
-
-__2.Check the validator set__  
-This commands below will print the updated validator set.
+    
+__2. Check the validator set__  
+Check that your validator's voting power is updated by querying the validator set
 
 ```
-# Get validator consensus address
-VALCONS_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
-        
-# Query validator consenus info        
+interchain-security-pd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
+  
 interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
 ```
 
 <br/><br/>
+
 
 ### Use systemd services (optional)
 The following steps show how to optionally setup the nodes' deamon to run in systemd services.
@@ -285,7 +287,7 @@ Description=Interchain Security service
 After=network-online.target
 [Service]
 User=root
-ExecStart=${BINARY_HOME}/interchain-security-pd start --home $PROV_NODE_DIR --rpc.laddr tcp://${NODE_IP}:26658 --grpc.address ${NODE_IP}:9091 --address tcp://${NODE_IP}:26655 --p2p.laddr tcp://${NODE_IP}:26656 --grpc-web.enable=false
+ExecStart=${BINARY_HOME}/interchain-security-pd start --home $PROV_NODE_DIR --rpc.laddr tcp://${MY_IP}:26658 --grpc.address ${MY_IP}:9091 --address tcp://${NODE_IP}:26655 --p2p.laddr tcp://${MY_IP}:26656 --grpc-web.enable=false
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -308,7 +310,7 @@ Description=Interchain Security service
 After=network-online.target
 [Service]
 User=root
-ExecStart=${BINARY_HOME}/interchain-security-cd start --home $CONS_NODE_DIR --rpc.laddr tcp://${NODE_IP}:26648 --grpc.address ${NODE_IP}:9081 --address tcp://${NODE_IP}:26645 --p2p.laddr tcp://${NODE_IP}:26646 --grpc-web.enable=false
+ExecStart=${BINARY_HOME}/interchain-security-cd start --home $CONS_NODE_DIR --rpc.laddr tcp://${MY_IP}:26648 --grpc.address ${MY_IP}:9081 --address tcp://${NODE_IP}:26645 --p2p.laddr tcp://${MY_IP}:26646 --grpc-web.enable=false
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
