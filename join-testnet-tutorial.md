@@ -162,7 +162,7 @@ __6. Setup client RPC endpoint__
 This command updates the consumer node RPC client config and allow to query the chain states as explained in the above.  
   
 ```
-sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26648\"/" ${CONS_NODE_DIR}/config/client.toml
+sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26648\"/" ${CONS_NODE_DIR}/config/client.toml
 ```
 <br/><br/>
 
@@ -287,7 +287,7 @@ Description=Interchain Security service
 After=network-online.target
 [Service]
 User=root
-ExecStart=${BINARY_HOME}/interchain-security-pd start --home $PROV_NODE_DIR --rpc.laddr tcp://${MY_IP}:26658 --grpc.address ${MY_IP}:9091 --address tcp://${NODE_IP}:26655 --p2p.laddr tcp://${MY_IP}:26656 --grpc-web.enable=false
+ExecStart=${BINARY_HOME}/interchain-security-pd start --home $PROV_NODE_DIR --rpc.laddr tcp://${MY_IP}:26658 --grpc.address ${MY_IP}:9091 --address tcp://${MY_IP}:26655 --p2p.laddr tcp://${MY_IP}:26656 --grpc-web.enable=false
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -310,7 +310,7 @@ Description=Interchain Security service
 After=network-online.target
 [Service]
 User=root
-ExecStart=${BINARY_HOME}/interchain-security-cd start --home $CONS_NODE_DIR --rpc.laddr tcp://${MY_IP}:26648 --grpc.address ${MY_IP}:9081 --address tcp://${NODE_IP}:26645 --p2p.laddr tcp://${MY_IP}:26646 --grpc-web.enable=false
+ExecStart=${BINARY_HOME}/interchain-security-cd start --home $CONS_NODE_DIR --rpc.laddr tcp://${MY_IP}:26648 --grpc.address ${MY_IP}:9081 --address tcp://${MY_IP}:26645 --p2p.laddr tcp://${MY_IP}:26646 --grpc-web.enable=false
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
