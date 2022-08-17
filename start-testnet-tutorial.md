@@ -72,7 +72,7 @@ mv ${PROV_NODE_DIR}/edited_genesis.json ${PROV_NODE_DIR}/config/genesis.json
 __3. Create an account keypair__  
 This following step creates a public/private keypair and stores it under the given keyname of your choice. The output is also exported into a json file for later use.  
 ```
-$PROV_KEY=provider-key
+PROV_KEY=provider-key
 interchain-security-pd keys add $PROV_KEY --home $PROV_NODE_DIR \
     --keyring-backend test --output json > ${PROV_NODE_DIR}/${PROV_KEY}.json 2>&1
 ```
@@ -96,7 +96,7 @@ To get our validator signing the genesis block (and to agree that this is the co
 ```
 interchain-security-pd gentx $PROV_KEY 100000000stake \
     --keyring-backend test \
-    --moniker $PROV_NODE_DIR \
+    --moniker $PROV_NODE_MONIKER \
     --chain-id $PROV_CHAIN_ID \
     --home $PROV_NODE_DIR
 ```  
@@ -125,12 +125,12 @@ sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26658\"/" \
 __8. Start the Provider chain__  
 Run the local node using the following command:
 ```
-interchain-security-pd start --home $PROV_NODE_DIR \  
-        --rpc.laddr tcp://localhost:26658 \ 
-        --grpc.address localhost:9091 \  
-        --address tcp://localhost:26655 \  
-        --p2p.laddr tcp://localhost:26656 \  
-        --grpc-web.enable=false \  
+interchain-security-pd start --home $PROV_NODE_DIR \
+        --rpc.laddr tcp://localhost:26658 \
+        --grpc.address localhost:9091 \
+        --address tcp://localhost:26655 \
+        --p2p.laddr tcp://localhost:26656 \
+        --grpc-web.enable=false \
         &> ${PROV_NODE_DIR}/logs &
 ```
 *Check the node deamon logs using `tail -f ${PROV_NODE_DIR}/logs`*    
@@ -148,7 +148,7 @@ These following steps show how to create a consumer chain using the governance a
 __1. Create a consumer chain proposal on the provider__  
 Create a governance proposal for a new consumer chain by executing the command above.
 ```
-tee consumer-proposal.json<<EOF
+tee ${PROV_NODE_DIR}/consumer-proposal.json<<EOF
 {
     "title": "Create consumer chain",
     "description": "Gonna be a great chain",
@@ -173,7 +173,7 @@ This command below will create a governance proposal and allow us to vote for it
 ```
 #create proposal
 interchain-security-pd tx gov submit-proposal \
-       create-consumer-chain consumer-proposal.json \
+       create-consumer-chain ${PROV_NODE_DIR}/consumer-proposal.json \
        --keyring-backend test \
        --chain-id $PROV_CHAIN_ID \
        --from $PROV_KEY \
@@ -197,7 +197,7 @@ This steps show how to setup and to run a consumer chain validator. Note that yo
 __0. Remove network directory__  
 
 ```
-CONS_NODE_DIR="~/consumer"
+CONS_NODE_DIR=~/consumer-coordinator
 rm -rf $CONS_NODE_DIR
 ```
 <br/><br/>  
@@ -206,7 +206,7 @@ __1. Create an initial genesis__
 Create the initial genesis file (`${CONS_NODE_DIR}/config/genesis.json`) with the following command:
   
 ```
-CONS_NODE_MONIKER=consumer-coordinator
+CONS_NODE_MONIKER=coordinator
 CONS_CHAIN_ID=consumer
 interchain-security-cd init $CONS_NODE_MONIKER --chain-id $CONS_CHAIN_ID --home $CONS_NODE_DIR
 ```  
@@ -249,7 +249,8 @@ Insert the CCV states into the initial local node genesis file using this comman
 jq -s '.[0].app_state.ccvconsumer = .[1] | .[0]' ${CONS_NODE_DIR}/config/genesis.json ccvconsumer_genesis.json > \
       ${CONS_NODE_DIR}/edited_genesis.json 
 
-mv ${CONS_NODE_DIR}/edited_genesis.json ${CONS_NODE_DIR}/config/genesis.json
+mv ${CONS_NODE_DIR}/edited_genesis.json ${CONS_NODE_DIR}/config/genesis.json &&
+    rm ccvconsumer_genesis.json
 ```
 <br/><br/>
 
@@ -297,7 +298,7 @@ tee ~/.hermes/config.toml<<EOF
 [[chains]]
 account_prefix = "cosmos"
 clock_drift = "5s"
-gas_multiplier = 1.1
+gas_adjustment = 0.1
 grpc_addr = "tcp://localhost:9081"
 id = "$CONS_CHAIN_ID"
 key_name = "relayer"
@@ -319,7 +320,7 @@ websocket_addr = "ws://localhost:26648/websocket"
 [[chains]]
 account_prefix = "cosmos"
 clock_drift = "5s"
-gas_multiplier = 1.1
+gas_adjustment = 0.1
 grpc_addr = "tcp://localhost:9091"
 id = "$PROV_CHAIN_ID"
 key_name = "relayer"
@@ -345,12 +346,12 @@ __2. Import keypair accounts to the IBC-Relayer__
 Import the acount keypairs to the relayer using the following command.  
 ```
 #Delete all previous keys in relayer
-hermes keys delete --chain $CONS_CHAIN_ID --all
-hermes keys delete --chain $PROV_CHAIN_ID --all
+hermes keys delete consumer -a
+hermes keys delete provider -a
 
 #Import accounts key
-hermes keys add --key-file ${CONS_NODE_DIR}/${CONS_KEY}.json --chain $CONS_CHAIN_ID
-hermes keys add --key-file ${PROV_NODE_DIR}/${PROV_KEY}.json --chain $PROV_CHAIN_ID
+hermes keys restore --mnemonic  "$(jq -r .mnemonic ${CONS_NODE_DIR}/${CONS_KEY}.json)" $CONS_CHAIN_ID
+hermes keys restore --mnemonic  "$(jq -r .mnemonic ${PROV_NODE_DIR}/${PROV_KEY}.json)" $PROV_CHAIN_ID
 ```
 
 <br/><br/>
@@ -358,25 +359,23 @@ hermes keys add --key-file ${PROV_NODE_DIR}/${PROV_KEY}.json --chain $PROV_CHAIN
 __3. Create connection and chanel__  
 These commands below establish the IBC connection and channel between the consumer chain and the provider chain.  
 ```
-hermes create connection \
-    --a-chain $CONS_CHAIN_ID \
-    --a-client 07-tendermint-0 \
-    --b-client 07-tendermint-0
+hermes create connection $CONS_CHAIN_ID \
+    --client-a 07-tendermint-0 \
+    --client-b 07-tendermint-0
 
-hermes create channel \
-    --a-chain $CONS_CHAIN_ID \
-    --a-port $CONS_CHAIN_ID \
-    --b-port  $PROV_CHAIN_ID \
-    --order ordered \
-    --channel-version 1 \
-    --a-connection connection-0
+hermes create channel $CONS_CHAIN_ID \
+    --port-a consumer \
+    --port-b provider \
+    -o ordered \
+    --channel-version 1 connection-0
 ```  
 <br/><br/>
 
 __4. Start Hermes__  
 The command bellow run the Hermes daemon in listen-mode.  
     
-`hermes --json start &> ~/.hermes/logs &`
+`hermes -j start &> ~/.hermes/logs &`
+
 <br/><br/>
 
 ---
@@ -388,7 +387,7 @@ __1. Delegate tokens__
 ```
 # Get validator delegations
 DELEGATIONS=$(interchain-security-pd q staking delegations \
-  $(jq -r .address ${PROV_NODE_DIR}/<provider_keyname_keypair>.json) --home $PROV_NODE_DIR -o json)
+  $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
 
 # Get validator operator address
 OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
