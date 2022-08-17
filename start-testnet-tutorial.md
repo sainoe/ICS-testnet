@@ -117,6 +117,8 @@ __7. Setup client RPC endpoint__
 This command changes the default RPC client endpoint port of our node. It is exposed by Tendermint and allows us to query the chains' states and to submit transactions.
     
 ```
+MY_IP=$(host -4 myip.opendns.com resolver1.opendns.com | grep "address" | awk '{print $4}')
+    
 sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" \
     ${PROV_NODE_DIR}/config/client.toml
 ```
@@ -125,7 +127,6 @@ sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" \
 __8. Start the Provider chain__  
 Run the local node using the following command:
 ```
-MY_IP=$(host -4 myip.opendns.com resolver1.opendns.com | grep "address" | awk '{print $4}')
 interchain-security-pd start --home $PROV_NODE_DIR \
         --rpc.laddr tcp://${MY_IP}:26658 \
         --grpc.address ${MY_IP}:9091 \
@@ -141,7 +142,7 @@ Query the chain to verify your local node appears in the validators list.
 `interchain-security-pd q staking validators --home $PROV_NODE_DIR`
 
 * *If you are running a coordinator node on a linux-like machine you might need to increase the file open limit using this command:
-    `ulimit -n 409` in order that Tendermint runs without limitations.*
+    `ulimit -n 4096` in order that Tendermint runs without limitations.*
 ---
 
 ### Consumer chain proposal  
