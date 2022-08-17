@@ -117,7 +117,7 @@ __7. Setup client RPC endpoint__
 This command changes the default RPC client endpoint port of our node. It is exposed by Tendermint and allows us to query the chains' states and to submit transactions.
     
 ```
-sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26658\"/" \
+sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26658\"/" \
     ${PROV_NODE_DIR}/config/client.toml
 ```
 <br/><br/>  
@@ -242,7 +242,7 @@ __4. Get the genesis consumer chain state from the provider chain__
 The CCV genesis states of the consumer chain are retrieved using the query below.  
 
 ```
-interchain-security-pd query provider consumer-genesis consumer \
+interchain-security-pd query provider consumer-genesis $CONS_CHAIN_ID \
     --home $PROV_NODE_DIR -o json > ccvconsumer_genesis.json
 ```
 
@@ -270,7 +270,7 @@ cp ${PROV_NODE_DIR}/config/node_key.json ${CONS_NODE_DIR}/config/node_key.json
 __7. Setup client RPC endpoint__  
 This command updates the consumer node RPC client config and allow to query the chain states as explained in the [section above](#provider-chain-setup/).  
   
-`sed -i -r "/node =/ s/= .*/= \"tcp:\/\/localhost:26648\"/" ${CONS_NODE_DIR}/config/client.toml`
+`sed -i -r "/node =/ s/= .*/= \"tcp:\/\/${MY_IP}:26648\"/" ${CONS_NODE_DIR}/config/client.toml`
 <br/><br/>
 
 __8. Start the Consumer chain__  
