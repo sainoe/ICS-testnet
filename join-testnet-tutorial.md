@@ -1,5 +1,5 @@
 ## Join the Interchain-Security Testnet
-This guide contains the instructions for joining a Interchain-Security Testnet. You can find the instructions to setup a IS-testnet from scratch [here](./start-testnet-tutorial.md). 
+This guide contains the instructions for joining a Interchain-Security Testnet. You can find the instructions to setup a ICS-testnet from scratch [here](./start-testnet-tutorial.md). 
 
 ---
 
@@ -26,7 +26,7 @@ make install
 This section will explain you how to setup and run an node in order to participate to the Provider chain as a validator.
 Choose a directory name (e.g. `~/provider-recruit`) to store the provider chain node files.
 
-* *If you have completed the [IS-testnet tutorial](./start-testnet-tutorial.md) on the same machine,
+* *If you have completed the [ICS-testnet tutorial](./start-testnet-tutorial.md) on the same machine,
   be sure to use <b>a different node folder</b>!*
 
 __1. Remove any existing directory__  
