@@ -8,7 +8,7 @@ This guide contains the instructions to setup a Interchain-Security Testnet. For
 - Go 1.18+ <sub><sup>([installation notes](https://go.dev/doc/install))<sub><sup>
 - Interchain Security binaries <sub><sup>([installation notes](#install-the-interchain-security-binary))<sub><sup>
 - Rust 1.60+ <sub><sup>([installation notes](https://www.rust-lang.org/tools/install))<sub><sup>
-- Hermes v0.15 <sub><sup>([installation notes](https://hermes.informal.systems/getting_started.html))<sub><sup>
+- Hermes v1.0.0 <sub><sup>([installation notes](https://hermes.informal.systems/getting_started.html))<sub><sup>
 - jq  <sub><sup>([installation notes](https://stedolan.github.io/jq/download/))<sub><sup>
 
 ---
@@ -302,7 +302,7 @@ tee ~/.hermes/config.toml<<EOF
 [[chains]]
 account_prefix = "cosmos"
 clock_drift = "5s"
-gas_adjustment = 0.1
+gas_multiplier = 1.1
 grpc_addr = "tcp://${MY_IP}:9081"
 id = "$CONS_CHAIN_ID"
 key_name = "relayer"
@@ -324,7 +324,7 @@ websocket_addr = "ws://${MY_IP}:26648/websocket"
 [[chains]]
 account_prefix = "cosmos"
 clock_drift = "5s"
-gas_adjustment = 0.1
+gas_multiplier = 1.1
 grpc_addr = "tcp://${MY_IP}:9091"
 id = "$PROV_CHAIN_ID"
 key_name = "relayer"
@@ -350,12 +350,12 @@ __2. Import keypair accounts to the IBC-Relayer__
 Import the acount keypairs to the relayer using the following command.  
 ```
 #Delete all previous keys in relayer
-hermes keys delete consumer -a
-hermes keys delete provider -a
+hermes keys delete --chain consumer --all
+hermes keys delete --chain provider --all
 
 #Import accounts key
-hermes keys restore --mnemonic  "$(jq -r .mnemonic ${CONS_NODE_DIR}/${CONS_KEY}.json)" $CONS_CHAIN_ID
-hermes keys restore --mnemonic  "$(jq -r .mnemonic ${PROV_NODE_DIR}/${PROV_KEY}.json)" $PROV_CHAIN_ID
+hermes keys add --key-file  ${CONS_NODE_DIR}/${MONIKER}_keypair.json --chain consumer
+hermes keys add --key-file  ${PROV_NODE_DIR}/${MONIKER}_keypair.json --chain provider
 ```
 
 <br/><br/>
@@ -363,22 +363,25 @@ hermes keys restore --mnemonic  "$(jq -r .mnemonic ${PROV_NODE_DIR}/${PROV_KEY}.
 __3. Create connection and chanel__  
 These commands below establish the IBC connection and channel between the consumer chain and the provider chain.  
 ```
-hermes create connection $CONS_CHAIN_ID \
-    --client-a 07-tendermint-0 \
-    --client-b 07-tendermint-0
+hermes create connection \
+     --a-chain consumer \
+    --a-client 07-tendermint-0 \
+    --b-client 07-tendermint-0
 
-hermes create channel $CONS_CHAIN_ID \
-    --port-a consumer \
-    --port-b provider \
-    -o ordered \
-    --channel-version 1 connection-0
+hermes create channel \
+    --a-chain consumer \
+    --a-port consumer \
+    --b-port provider \
+    --order ordered \
+    --channel-version 1 \
+    --a-connection connection-0
 ```  
 <br/><br/>
 
 __4. Start Hermes__  
 The command bellow run the Hermes daemon in listen-mode.  
     
-`hermes -j start &> ~/.hermes/logs &`
+`hermes --json start &> ~/.hermes/logs &`
 
 <br/><br/>
 
