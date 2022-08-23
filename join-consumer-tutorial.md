@@ -28,7 +28,7 @@ interchain-security-cd init $CONS_NODE_MONIKER --chain-id $CONS_CHAIN_ID --home 
 __2. Get consumer chain genesis__   
 Download the consumer chain genesis using the following command:
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/HopingShare
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/CoopersSingled
 ```
 
 <br />
