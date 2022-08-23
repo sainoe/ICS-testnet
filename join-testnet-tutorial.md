@@ -64,7 +64,7 @@ __4. Get the Provider chain genesis file__
 Download the provider chain genesis file to the correct location.
 
 ```
-wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/GlitterTracker
+wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/FiendGruesome
 ```
 
 <br/><br/>
@@ -142,7 +142,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/CrewsOrton
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/DeucesReferee
 ``` 
 
 <br/><br/>
