@@ -1,4 +1,4 @@
-### Join a consumer chain
+## Join a consumer chain
 This guide explains you the steps to join a consumer chain assuming that a provider chain validator node is already set on your local machine.
 
 <br />
