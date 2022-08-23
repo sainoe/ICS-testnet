@@ -384,7 +384,10 @@ hermes create channel \
 __4. Start Hermes__  
 The command bellow run the Hermes daemon in listen-mode.  
     
-`hermes --json start &> ~/.hermes/logs &`
+```
+pkill -f hermes    
+hermes --json start &> ~/.hermes/logs &
+```
 
 <br/><br/>
 
