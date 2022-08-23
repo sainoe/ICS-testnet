@@ -14,22 +14,21 @@ rm -rf $CONS_NODE_DIR
 
 <br />
 
-__1. Create account___   
+__1. Create account__   
 ```
 CONS_CHAIN_ID=consumer2
 CONS_NODE_DIR=~/consumer2
-CONS_NODE_MONIKER=consumer2
-rm -rf $CONS_NODE_DIR
+CONS_NODE_MONIKER=change-me
 
 interchain-security-cd init $CONS_NODE_MONIKER --chain-id $CONS_CHAIN_ID --home $CONS_NODE_DIR
 ```
 
 <br />
 
-__2. Get consumer chain genesis__ 
+__2. Get consumer chain genesis__   
 Download the consumer chain genesis using the following command:
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/https://paste.c-net.org/DentistsSuper
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/HopingShare
 ```
 
 <br />
