@@ -265,7 +265,7 @@ __2. Check the validator set__
 Check that your validator's voting power is updated by querying the validator set
 
 ```
-interchain-security-pd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
+interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR | grep -A11 $VALCONS_ADDR
   
 interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
 ```
