@@ -195,7 +195,7 @@ ACCOUNT_ADDR=$(interchain-security-pd keys show $PROV_KEY \
        --keyring-backend test --home $PROV_NODE_DIR --output json | jq -r '.address')
 
 # Request tokens 
-curl "http://165.227.143.45:8000/request?address=${ACCOUNT_ADDR}&chain=provider"
+curl "http://167.172.190.207:8000/request?address=${ACCOUNT_ADDR}&chain=provider"
 
 # Check your account's balance
 interchain-security-pd q bank balances ${ACCOUNT_ADDR} --home $PROV_NODE_DIR
