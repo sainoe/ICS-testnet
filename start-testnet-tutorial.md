@@ -37,6 +37,7 @@ Start by choosing a directory name, like `~/provider` to store the provider chai
 ```
 PROV_NODE_DIR=~/provider-coordinator
 rm -rf $PROV_NODE_DIR
+pkill -f interchain-security-pd
 ```
 
 <br/><br/>
@@ -203,6 +204,8 @@ __0. Remove network directory__
 ```
 CONS_NODE_DIR=~/consumer-coordinator
 rm -rf $CONS_NODE_DIR
+pkill -f interchain-security-cd
+
 ```
 <br/><br/>  
   
