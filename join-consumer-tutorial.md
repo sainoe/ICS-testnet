@@ -1,12 +1,11 @@
 ## Join a consumer chain
-This guide explains you the steps to join a consumer chain assuming that a provider chain validator node is already set on your local machine.
+This guide shows the steps to start a consumer chain assuming that a provider chain validator node is already set on your local machine.
 
 <br />
 
 ### Setup consumer chain
-The following commands show how to create a consumer chain node configuration files
 
-__0. Remove existing directory__  
+__0. Remove any existing directory__  
 ```
 CONS_NODE_DIR=~/consumer2
 rm -rf $CONS_NODE_DIR
@@ -14,7 +13,8 @@ rm -rf $CONS_NODE_DIR
 
 <br />
 
-__1. Create account__   
+__1. Setup the node directory__   
+This following step create the node configuration files.
 ```
 CONS_CHAIN_ID=consumer2
 CONS_NODE_DIR=~/consumer2
