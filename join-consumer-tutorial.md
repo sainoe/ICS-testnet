@@ -72,3 +72,13 @@ interchain-security-cd start --home $CONS2_NODE_DIR \
         --p2p.persistent_peers $CONS2_P2P_ADDRESS \
         &> ${CONS2_NODE_DIR}/logs &
 ```
+
+__6. Check that you are in the validator set of the second consumer chain__
+
+```
+# Get validator consensus address
+VALCONS_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
+        
+# Query the chains validator set  
+interchain-security-cd q tendermint-validator-set --home $CONS2_NODE_DIR | grep -A11 $VALCONS_ADDR
+```
