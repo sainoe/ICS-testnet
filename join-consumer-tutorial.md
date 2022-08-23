@@ -17,7 +17,6 @@ __1. Setup the node directory__
 This following step create the node configuration files.
 ```
 CONS_CHAIN_ID=consumer2
-CONS_NODE_DIR=~/consumer2
 CONS_NODE_MONIKER=change-me
 
 interchain-security-cd init $CONS_NODE_MONIKER --chain-id $CONS_CHAIN_ID --home $CONS_NODE_DIR
