@@ -357,8 +357,8 @@ hermes keys delete --chain consumer --all
 hermes keys delete --chain provider --all
 
 #Import accounts key
-hermes keys add --key-file  ${CONS_NODE_DIR}/${MONIKER}_keypair.json --chain consumer
-hermes keys add --key-file  ${PROV_NODE_DIR}/${MONIKER}_keypair.json --chain provider
+hermes keys add --key-file  ${CONS_NODE_DIR}/${CONS_KEY}.json --chain consumer
+hermes keys add --key-file  ${PROV_NODE_DIR}/${PROV_KEY}.json --chain provider
 ```
 
 <br/><br/>
