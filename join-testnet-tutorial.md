@@ -142,7 +142,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/ShallHerpes
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/FeedbackMonths
 ``` 
 
 <br/><br/>
