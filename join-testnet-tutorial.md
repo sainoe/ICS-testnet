@@ -235,7 +235,7 @@ Verify that you node was added to the validators using the following command.
 VALCONS_ADDR=$(interchain-security-pd tendermint show-address --home $PROV_NODE_DIR)
         
 # Query the chains validator set
-interchain-security-pd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
+interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR | grep -A11 $VALCONS_ADDR
   
 interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
 ```
