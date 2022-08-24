@@ -1,5 +1,10 @@
 This command will let you vote for a proposal to stop a consumer chain using the CLI
 
+0. See the IBC client of the consumer chain
+
+```
+interchain-security-pd q ibc client states --home $PROV_NODE_DIR
+```
 
 1. See proposals on the blockchain
 ```
@@ -18,4 +23,10 @@ PROV_CHAIN_ID=provider
 
 interchain-security-pd tx gov vote $PROP_NUMBER yes --from $PROV_KEY \
        --keyring-backend test --chain-id $PROV_CHAIN_ID --home $PROV_NODE_DIR -b block -y
+```
+
+3. Check that the IBC client of the consumer chain has been removed
+
+```
+interchain-security-pd q ibc client states --home $PROV_NODE_DIR
 ```
