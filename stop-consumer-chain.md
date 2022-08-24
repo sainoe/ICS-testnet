@@ -32,3 +32,11 @@ interchain-security-pd q ibc client states --home $PROV_NODE_DIR
 ```
 
 After the consumer chain is stopped, the `latest_height.revision_height` field will stop updating, and will be the same every time you query.
+
+
+4. Check that the consumer chain has stopped
+```
+cat ${CONS_NODE_DIR}/logs | grep -m 1 "shutdown consumer chain since it is not secured anymore"
+```
+
+You will see where the consumer chain stopped itself once the channel was closed. For example: `4:46PM ERR CCV channel "channel-0" was closed - shutdown consumer chain since it is not secured anymore`
