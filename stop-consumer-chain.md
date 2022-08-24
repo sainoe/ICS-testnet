@@ -25,8 +25,10 @@ interchain-security-pd tx gov vote $PROP_NUMBER yes --from $PROV_KEY \
        --keyring-backend test --chain-id $PROV_CHAIN_ID --home $PROV_NODE_DIR -b block -y
 ```
 
-3. Check that the IBC client of the consumer chain has been removed
+3. Check that the IBC client of the consumer chain has been stopped
 
 ```
 interchain-security-pd q ibc client states --home $PROV_NODE_DIR
 ```
+
+After the consumer chain is stopped, the `latest_height.revision_height` field will stop updating, and will be the same every time you query.
