@@ -18,7 +18,7 @@ This guide contains the instructions for joining a Interchain-Security Testnet. 
 ```
 git clone https://github.com/cosmos/interchain-security.git
 cd interchain-security
-git checkout tags/v0.1
+git checkout tags/v0.1.1
 make install
 ```
 
