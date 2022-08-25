@@ -1,6 +1,10 @@
 
 
 ```
+PROV_NODE_DIR=~/provider
+PROV_CHAIN_ID=provider
+PROV_KEY=provider-key
+
 DELEGATIONS=$(interchain-security-pd q staking delegations $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
 OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
@@ -23,9 +27,16 @@ interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR | grep -
   
 interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -A11 $VALCONS_ADDR
 ```
+After the provider chain unbonding period, i.e. 5 mins, check that your unbonding delegation still exists
+```
+ACCOUNT_ADDR=$(interchain-security-pd keys show $PROV_KEY \
+       --keyring-backend test --home $PROV_NODE_DIR --output json | jq -r '.address')
+interchain-security-pd q staking unbonding-delegations $ACCOUNT_ADDR --home $PROV_NODE_DIR
+```
 
-After the unbonding period, check that you have your money back
+After the consumer chain unbonding period, i.e. 10 mins, check that your unbonding delegation was removed and that your money is back
 
 ```
+interchain-security-pd q staking unbonding-delegations $ACCOUNT_ADDR --home ~/provider
 interchain-security-pd q bank balances ${ACCOUNT_ADDR} --home $PROV_NODE_DIR
 ```
