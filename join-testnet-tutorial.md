@@ -1,5 +1,5 @@
 ## Join the Interchain-Security Testnet
-This guide contains the instructions for joining a Interchain-Security Testnet. You can find the instructions to setup a ICS-testnet from scratch [here](./start-testnet-tutorial.md). 
+This guide contains the instructions for joining a Interchain-Security Testnet.
 
 ---
 
@@ -26,20 +26,17 @@ make install
 This section will explain you how to setup and run an node in order to participate to the Provider chain as a validator.
 Choose a directory name (e.g. `~/provider-recruit`) to store the provider chain node files.
 
-* *If you have completed the [ICS-testnet tutorial](./start-testnet-tutorial.md) on the same machine,
-  be sure to use <b>a different node folder</b>!*
-
 __1. Remove any existing directory__  
 
 ```
 PROV_NODE_DIR=~/provider
 rm -rf $PROV_NODE_DIR
 pkill -f interchain-security-pd
-```  
+```
  <br/><br/>  
 
 __2. Create the node directory__  
-The command below initializes the node's configuration files. The `$PROV_NODE_MONIKER` argument is a public moniker that will identify your validator, i.e. `coop-validator`).Additionally, in this guide its assumed that the provider and consumer chains id are self-titled.
+The command below initializes the node's configuration files. The `$PROV_NODE_MONIKER` argument is a public moniker that will identify your validator, i.e. `coop-validator`). Additionally, it's assumed that the provider and consumer chains id are self-titled in this guide.
 ```
 PROV_NODE_MONIKER=change-me
 PROV_CHAIN_ID=provider
@@ -64,7 +61,7 @@ __4. Get the Provider chain genesis file__
 Download the provider chain genesis file to the correct location.
 
 ```
-wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/FleasStands
+wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/PreacherCement
 ```
 
 <br/><br/>
@@ -87,7 +84,9 @@ interchain-security-pd start --home $PROV_NODE_DIR \
 ```
    
    
-* *If you get the error "can't bind address xxx.xxx.x.x", try using `127.0.0.1` instead.* 
+* *If you get the error "can't bind address xxx.xxx.x.x", try using `127.0.0.1` instead.*  
+
+* *Check the node deamon logs using `tail -f ${PROV_NODE_DIR}/logs`*
 
 
 <br/><br/>
@@ -142,7 +141,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/CurryYears
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/ProvidedJasper
 ``` 
 
 <br/><br/>
@@ -272,67 +271,3 @@ interchain-security-cd q tendermint-validator-set --home $CONS_NODE_DIR | grep -
 
 <br/><br/>
 
-
-### Use systemd services (optional)
-The following steps show how to optionally setup the nodes' deamon to run in systemd services.
-
-__1. Create service file for the nodes__  
-
-```
-BINARY_HOME=$(which interchain-security-pd)
-
-tee vim /etc/systemd/system/interchain-security-pd.service<<EOF
-[Unit]
-Description=Interchain Security service
-After=network-online.target
-[Service]
-User=root
-ExecStart=${BINARY_HOME}/interchain-security-pd start --home $PROV_NODE_DIR --rpc.laddr tcp://${MY_IP}:26658 --grpc.address ${MY_IP}:9091 --address tcp://${MY_IP}:26655 --p2p.laddr tcp://${MY_IP}:26656 --grpc-web.enable=false
-Restart=always
-RestartSec=3
-LimitNOFILE=4096
-Environment='DAEMON_NAME=interchain-security-pd'
-Environment='DAEMON_HOME=${BINARY_HOME}'
-Environment='DAEMON_ALLOW_DOWNLOAD_BINARIES=true'
-Environment='DAEMON_RESTART_AFTER_UPGRADE=true'
-Environment='DAEMON_LOG_BUFFER_SIZE=512'
-[Install]
-WantedBy=multi-user.target
-EOF
-```
-
-```
-BINARY_HOME=$(which interchain-security-cd)
-  
-tee vim /etc/systemd/system/interchain-security-cd.service<<EOF
-[Unit]
-Description=Interchain Security service
-After=network-online.target
-[Service]
-User=root
-ExecStart=${BINARY_HOME}/interchain-security-cd start --home $CONS_NODE_DIR --rpc.laddr tcp://${MY_IP}:26648 --grpc.address ${MY_IP}:9081 --address tcp://${MY_IP}:26645 --p2p.laddr tcp://${MY_IP}:26646 --grpc-web.enable=false
-Restart=always
-RestartSec=3
-LimitNOFILE=4096
-Environment='DAEMON_NAME=interchain-security-cd'
-Environment='DAEMON_HOME=${BINARY_HOME}'
-Environment='DAEMON_ALLOW_DOWNLOAD_BINARIES=true'
-Environment='DAEMON_RESTART_AFTER_UPGRADE=true'
-Environment='DAEMON_LOG_BUFFER_SIZE=512'
-[Install]
-WantedBy=multi-user.target
-EOF
-```
-<br/><br/>
-
-__2. Reload the services__  
-Run the following command to reload the services
-
-```
-systemctl daemon-reload
-systemctl restart systemd-journald
-
-# check the validators status and logs
-systemctl status interchain-security-pd
-journalctl -n 100 --no-pager`
-```
