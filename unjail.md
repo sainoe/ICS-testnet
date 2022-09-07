@@ -1,5 +1,5 @@
 ## Unjail tutorial
-This command shows you how to unjail your local proivider chain validator.
+This command shows you how to unjail your local provider chain validator.
 
 
 __1. Submit unjail transaction__  
@@ -20,7 +20,7 @@ interchain-security-pd tx slashing unjail \
  <br/><br/>  
 
 __2. Check the updated validator-sets__  
-Check that you are not in the validator set any more.
+Check that you are not in the validator set again.
 
 ```
 # Get validator consensus address
