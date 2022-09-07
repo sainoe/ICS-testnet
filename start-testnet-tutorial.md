@@ -17,7 +17,7 @@ This guide contains the instructions to setup a Interchain-Security Testnet. For
 ```
 git clone https://github.com/cosmos/interchain-security.git
 cd interchain-security
-git checkout tags/v0.1.2
+git checkout tags/v0.1.3
 make install
 ```
 
