@@ -6,7 +6,7 @@ These instructions explain how to unbond some tokens of an ICS testnet validator
 
  <br/><br/>  
 
-__1. Submit an unbonding transaction__
+__1. Submit an unbonding transaction__   
 The following command undelegates `2000000stake` from your local provider chain validator.
 ```
 PROV_NODE_DIR=~/provider
