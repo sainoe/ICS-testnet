@@ -16,7 +16,7 @@ PROP_ID=4
 PROV_KEY=provider-key
 PROV_CHAIN_ID=provider
 
-interchain-security-pd tx gov vote $PROP_NUMBER yes --from $PROV_KEY \
+interchain-security-pd tx gov vote $PROP_ID yes --from $PROV_KEY \
        --keyring-backend test --chain-id $PROV_CHAIN_ID --home $PROV_NODE_DIR -b block -y
 ```
 
