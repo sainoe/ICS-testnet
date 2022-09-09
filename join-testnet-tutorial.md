@@ -247,7 +247,7 @@ These optional steps show you how CCV updates the Consumer chain validator-set v
 
 __1. Delegate tokens__  
 ```
-DELEGATIONS=$(interchain-security-pd q staking delegations $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
+DELEGATIONS=$(interchain-security-pd q staking delegations ${ACCOUNT_ADDR} --home $PROV_NODE_DIR -o json)
 OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
 interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
