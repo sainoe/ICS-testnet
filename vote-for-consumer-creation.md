@@ -7,7 +7,7 @@ PROV_NODE_DIR=~/provider
 
 interchain-security-pd q gov proposal 4 --home $PROV_NODE_DIR
 ```
-You should a proposal called "Create consumer chain". Check what the `proposal_id` is, and input it as `PROP_ID` below.
+You should see a proposal called "Create consumer chain". Check what the `proposal_id` is, and input it as `PROP_ID` below.
 
 2. Now vote for the proposal
 
