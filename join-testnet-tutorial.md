@@ -18,7 +18,7 @@ This guide contains the instructions for joining a Interchain-Security Testnet.
 ```
 git clone https://github.com/cosmos/interchain-security.git
 cd interchain-security
-git checkout tags/v0.1.3
+git checkout tags/v0.1.4
 make install
 ```
 
@@ -61,7 +61,7 @@ __4. Get the Provider chain genesis file__
 Download the provider chain genesis file to the correct location.
 
 ```
-wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/LevonShowcase
+wget -O ${PROV_NODE_DIR}/config/genesis.json https://paste.c-net.org/ScarringAiming
 ```
 
 <br/><br/>
@@ -141,7 +141,7 @@ __4. Get the Consumer chain genesis file__
 Download the consumer chain genesis file to the correct location.
 
 ```
-wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/PackedDrones
+wget -O ${CONS_NODE_DIR}/config/genesis.json https://paste.c-net.org/SonnyLimos
 ``` 
 
 <br/><br/>
