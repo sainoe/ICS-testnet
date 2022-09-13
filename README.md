@@ -1,5 +1,19 @@
 # Interchain-Security Testnet
 
+## September 13th, 2022
+
+Today, we have noticed several irregularities in the testnet. 
+
+First of all, the IBC channel between the provider and the consumer is no longer working. It seems that a packet on the channel caused the Hermes relayer to have a parse error, resulting in the packet not being relayed, and no further packets being relayed because it is an ordered channel.
+
+The Informal Hermes team is looking at this error, and the Stranglove team (thanks danb!) will attempt to set up an instance of go-relayer.
+
+Second, it seems that on the provider chain, only Simon's coordinator node is proposing blocks. This is very odd, especially considering that we didn't touch tendermint at all, and the provider chain is less heavily modified than the consumer.
+
+In good news, we have delegated out the stake on the provider chain to make it decentralized! Each validator has been delegated 10 tokens, bringing Simon's coordinator below 2/3s power. Unfortunately this will not be reflected on the consumer chain until we get this relaying issue figured out.
+
+We also verified that even though the provider's unbonding period is over, Simon's coordinator has not gotten its tokens unbonded, since the consumer chain's unbonding period is not yet over (and even if it was, with the current relaying difficulties, the provider chain wouldn't know!)
+
 ## September 12th, 2022
 
 Today, we had to restart the entire testnet because of a complicated bug. We have updated the **[Join the testnet](https://github.com/sainoe/ICS-testnet/blob/main/join-testnet-tutorial.md)** instructions with the new binary release and genesis files. Follow along with these to start a new provider and first consumer chain. It's exactly the same procedure as last time, just with different binary and genesis.
