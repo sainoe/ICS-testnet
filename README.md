@@ -4,7 +4,7 @@
 
 Resuming after our weeklong hiatus. We'll be on a more relaxed schedule this week and next, due to the Cosmoverse conference. Work continues to figure out the strange packet relaying bug that we saw last week.
 
-Our task for today is to vote on the stop-consumer-chain proposal. You can find the instructions (here)[https://github.com/sainoe/ICS-testnet/blob/main/stop-consumer-chain.md]. Voting on this is much simpler than the start-consumer-chain proposal was. There is nothing to verify besides checking that the chain-id belongs to a consumer chain that you want to stop.
+Our task for today is to vote on the stop-consumer-chain proposal. You can find the instructions [here](https://github.com/sainoe/ICS-testnet/blob/main/stop-consumer-chain.md). Voting on this is much simpler than the start-consumer-chain proposal was. There is nothing to verify besides checking that the chain-id belongs to a consumer chain that you want to stop.
 
 ## September 13th, 2022
 
