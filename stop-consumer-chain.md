@@ -2,7 +2,7 @@
 
 This command will let you vote for a proposal to stop a consumer chain using the CLI
 
-0. Check the state of the IBC channel used by the CCV protocol
+0. Check the state of the IBC channel used by the CCV protocol, you can see that it is still running because the consumer chain is still running.
 
 ```
 PROV_NODE_DIR=~/provider
