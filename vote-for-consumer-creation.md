@@ -5,20 +5,20 @@ This command will let you vote for a proposal to create a second consumer chain 
 ```
 PROV_NODE_DIR=~/provider
 
-interchain-security-pd q gov proposal 8 --home $PROV_NODE_DIR
+interchain-security-pd q gov proposal 10 --home $PROV_NODE_DIR
 ```
 You should see a proposal called "Create consumer chain 2".
 
 2. Check the votes
 
 ```
-interchain-security-pd q gov tally 8 --home $PROV_NODE_DIR
+interchain-security-pd q gov tally 10 --home $PROV_NODE_DIR
 ```
 
 3. Now vote for the proposal
 
 ```
-PROP_ID=8
+PROP_ID=10
 PROV_KEY=provider-key
 PROV_CHAIN_ID=provider
 
@@ -29,5 +29,5 @@ interchain-security-pd tx gov vote $PROP_ID yes --from $PROV_KEY \
 4. Check that your vote was added
 
 ```
-interchain-security-pd q gov tally 8 --home $PROV_NODE_DIR
+interchain-security-pd q gov tally 10 --home $PROV_NODE_DIR
 ```
