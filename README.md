@@ -1,5 +1,52 @@
 # Interchain-Security Testnet
 
+## September 22nd, 2022
+
+We're starting a new consumer chain! The voting period is 2 days, so this will hopefully go live on Saturday the 22nd. Please vote for this consumer chain, but please verify it first. There are instructions on how to verify a proposal in the `description` field below. The purpose of these verification steps is to make sure that the consumer chain and binary are good quality and not malicious. In production, this inspection and verification will most likely be done by community members. [Here](https://github.com/sainoe/ICS-testnet/blob/main/vote-for-consumer-creation.md) are the instructions on how to vote for the proposal once you have verified it.
+
+Once the proposal passes, the chain will not start running, and nobody will be slashed for downtime, until 2/3s of the power is running the chain. This allows for a margin of error if a lot of people are slow getting their new nodes up, but it will be interesting to see how everything shakes out.
+
+```
+content:
+  '@type': /interchain_security.ccv.provider.v1.CreateConsumerChainProposal
+  binary_hash: 1a590bd6c2b0e855e11ff3bc307a82dbe6a6487dd7e4a84ed90698c0b072ff96
+  chain_id: consumer2
+  description: 'This is the proposal to create consumer chain 2. First, verify the
+    genesis, download and hash the genesis.json file with the following command: ''curl
+    -s https://paste.c-net.org/DriftedSounding > genesis.json; sha256sum genesis.json''.
+    The outputted hash should match this proposal''s ''genesis_hash'' field. Now,
+    you can inspect the genesis file to make sure that everything is in order. The
+    ''ccvconsumer'' field is empty. It will be filled in after this proposal passes.
+    Next, verify the binary. Follow the steps here https://github.com/sainoe/ICS-testnet/blob/main/join-testnet-tutorial.md#install-the-interchain-security-binary
+    to download and build the binary (it is the same one as used for the first consumer
+    chain, so if you already have it locally, you can skip downloading and building
+    it again). Run this command to get the hash ''sha256sum /root/go/bin/interchain-security-cd'',
+    and see that it matches this proposal''s ''binary_hash'' field. Now, you can inspect
+    the binary''s source code to make sure that everything is in order, and vote yes
+    or no on this proposal.'
+  genesis_hash: 6ae334300acc66f31c7c32f7a8f0c996991a6ea35021a3dafcf7d21c8202cad4
+  initial_height:
+    revision_height: "1"
+    revision_number: "0"
+  lock_unbonding_on_timeout: false
+  spawn_time: "2022-03-11T17:02:14.718477Z"
+  title: Create consumer chain 2
+deposit_end_time: "2022-09-24T15:52:43.489858803Z"
+final_tally_result:
+  abstain: "0"
+  "no": "0"
+  no_with_veto: "0"
+  "yes": "0"
+proposal_id: "10"
+status: PROPOSAL_STATUS_VOTING_PERIOD
+submit_time: "2022-09-22T15:52:43.489858803Z"
+total_deposit:
+- amount: "10000001"
+  denom: stake
+voting_end_time: "2022-09-24T15:52:43.489858803Z"
+voting_start_time: "2022-09-22T15:52:43.489858803Z"
+```
+
 ## September 21st, 2022
 
 Resuming after our weeklong hiatus. We'll be on a more relaxed schedule this week and next, due to the Cosmoverse conference. Work continues to figure out the strange packet relaying bug that we saw last week.
