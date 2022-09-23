@@ -39,7 +39,7 @@ interchain-security-pd q gov tally 9 --home $PROV_NODE_DIR
 3. Verify that the proposal passed and check the IBC channel's state again
 
 ```
-interchain-security-pd q gov proposal PROP_ID=3 --home ${PROV_NODE_DIR}
+interchain-security-pd q gov proposal $PROP_ID --home ${PROV_NODE_DIR}
 interchain-security-pd q ibc channel end $PROV_CHAIN_ID $CHANNEL_ID --home $PROV_NODE_DIR 
 ```
 
